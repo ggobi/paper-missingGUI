@@ -118,17 +118,16 @@ In the GUI of Figure 1, double-click the 2nd row ("latitude") in region 1.
 ** Figure 10
 select the 4th-6th rows in region 1 of Figure 1.
 uncheck all the checkboxes in region 2.
-click "humidity" in region 3.
 click "Pairwise Plots" in region 5.
-(left panel) click "Below 10%" in region 4.
-(right panel) click "Median" in region 4.
+(left panel) click "humidity" in region 3, and click "Below 10%" in region 4.
+(right panel) click "Missing Any Variables" in region 3, and click "Median" in region 4.
 click "Plot" in region 6.
 
 
 ** Figure 11
 select the 4th-6th rows in region 1 of Figure 1.
 check "year" in region 2.
-click "humidity" in region 3.
+click "Missing Any Variables" in region 3.
 click "Pairwise Plots" in region 5.
 (left panel) click "Median" in region 4.
 (right panel) click "Regression" in region 4.
