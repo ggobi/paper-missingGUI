@@ -4,23 +4,23 @@
 %%
 %% The original source files were:
 %%
-%% merlin.mbs  (with options: `ay,nat,nm-rvx,keyxyr,dt-beg,yr-par,note-yr,tit-qq,bt-qq,atit-u,trnum-it,vol-bf,volp-com,num-xser,isbn,issn,edpar,pp,ed,xedn,xand,etal-it,revdata,eprint,url,url-blk,doi,nfss')
-%% ----------------------------------------
-%% *** Journal of Statistical Software ***
+%% merlin.mbs  (with options: `ay,nat,nm-rvx,keyxyr,dt-beg,yr-par,note-yr,tit-qq,atit-u,trnum-it,vol-bf,volp-com,num-xser,pre-edn,isbn,issn,edpar,pp,ed,xedn,xand,etal-it,revdata,eprint,url,url-blk,doi,nfss')
 %% 
-%% Copyright 1994-2004 Patrick W Daly
+%% ** BibTeX style file for JSS publications (http://www.jstatsoft.org/)
+%% 
+%% Copyright 1994-2007 Patrick W Daly
+%% License: GPL-2
  % ===============================================================
  % IMPORTANT NOTICE:
  % This bibliographic style (bst) file has been generated from one or
- % more master bibliographic style (mbs) files, listed above.
+ % more master bibliographic style (mbs) files, listed above, provided
+ % with kind permission of Patrick W Daly.
  %
  % This generated file can be redistributed and/or modified under the terms
- % of the LaTeX Project Public License Distributed from CTAN
- % archives in directory macros/latex/base/lppl.txt; either
- % version 1 of the License, or any later version.
+ % of the General Public License (Version 2).
  % ===============================================================
  % Name and version information of the main mbs file:
- % \ProvidesFile{merlin.mbs}[2004/02/09 4.13 (PWD, AO, DPC)]
+ % \ProvidesFile{merlin.mbs}[2007/04/24 4.20 (PWD, AO, DPC)]
  %   For use with BibTeX version 0.99a or later
  %-------------------------------------------------------------------
  % This bibliography style file is intended for texts in ENGLISH
@@ -407,8 +407,10 @@ FUNCTION {format.url}
   if$
 }
 
-STRINGS  { bibinfo}
 INTEGERS { nameptr namesleft numnames }
+
+
+STRINGS  { bibinfo}
 
 FUNCTION {format.names}
 { 'bibinfo :=
@@ -430,11 +432,11 @@ FUNCTION {format.names}
           namesleft #1 >
             { ", " * t * }
             {
-              "," *
               s nameptr "{ll}" format.name$ duplicate$ "others" =
                 { 't := }
                 { pop$ }
               if$
+              "," *
               t "others" =
                 {
                   " " * bbl.etal emphasize *
@@ -473,11 +475,11 @@ FUNCTION {format.names.ed}
           namesleft #1 >
             { ", " * t * }
             {
-              "," *
               s nameptr "{ll}" format.name$ duplicate$ "others" =
                 { 't := }
                 { pop$ }
               if$
+              "," *
               t "others" =
                 {
 
@@ -583,12 +585,6 @@ FUNCTION {format.title}
       "\enquote{" swap$ *
       add.period$ "}" *
     }
-  if$
-}
-FUNCTION {end.quote.btitle}
-{ booktitle empty$
-    'skip$
-    { before.all 'output.state := }
   if$
 }
 FUNCTION {format.full.names}
@@ -918,20 +914,10 @@ FUNCTION {format.chapter.pages}
   if$
 }
 
-FUNCTION {bt.enquote}
-{ duplicate$ empty$ 'skip$
-  { "\enquote{" swap$ *
-    non.stop
-      { ",} " * }
-      { "}, " * }
-    if$
-  }
-  if$
-}
 FUNCTION {format.booktitle}
 {
   booktitle "booktitle" bibinfo.check
-  bt.enquote
+  emphasize
 }
 FUNCTION {format.in.ed.booktitle}
 { format.booktitle duplicate$ empty$ 'skip$
@@ -1065,6 +1051,7 @@ FUNCTION {book}
     { format.bvolume output
       new.block
       format.number.series output
+      format.edition output
       new.sentence
       format.publisher.address output
     }
@@ -1073,7 +1060,6 @@ FUNCTION {book}
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   format.isbn output
   format.doi output
   new.block
@@ -1123,6 +1109,7 @@ FUNCTION {inbook}
       format.chapter.pages "chapter and pages" output.check
       new.block
       format.number.series output
+      format.edition output
       new.sentence
       format.publisher.address output
     }
@@ -1132,7 +1119,6 @@ FUNCTION {inbook}
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   crossref missing$
     { format.isbn output }
     'skip$
@@ -1155,13 +1141,12 @@ FUNCTION {incollection}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      end.quote.btitle
       format.bvolume output
       format.number.series output
+      format.edition output
       format.chapter.pages output
       new.sentence
       format.publisher.address output
-      format.edition output
       format.isbn output
     }
     { format.incoll.inproc.crossref output.nonnull
@@ -1185,7 +1170,6 @@ FUNCTION {inproceedings}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      end.quote.btitle
       format.bvolume output
       format.number.series output
       format.pages output
