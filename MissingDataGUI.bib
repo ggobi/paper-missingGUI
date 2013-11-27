@@ -11,31 +11,80 @@
 @Manual{hmisc,
     title = {\pkg{Hmisc}: Harrell Miscellaneous},
     author = {Frank~E.~Harrell},
-    year = {2012},
-    note = {\proglang{R}~package version~3.9-3},
+    year = {2013},
+    note = {\proglang{R}~package version~3.12-2},
     url = {http://CRAN.R-project.org/package=Hmisc},
 }
   
 @Manual{norm,
     title = {\pkg{norm}: Analysis of Multivariate Normal Datasets with Missing Values},
     author = {Alvaro~A.~Novo and Joseph~L.~Schafer},
-    year = {2010},
-    note = {\proglang{R}~package version~1.0-9.2},
+    year = {2013},
+    note = {\proglang{R}~package version~1.0-9.5},
     url = {http://CRAN.R-project.org/package=norm},
 }
-  
+
+@Article{mi,
+    title = {Multiple Imputation with Diagnostics (\pkg{mi}) in \proglang{R}: Opening Windows into the Black Box},
+    author = {Yu-Sung~Su and Andrew~Gelman and Jennifer~Hill and Masanao~Yajima},
+    journal = {Journal of Statistical Software},
+    year = {2011},
+    volume = {45},
+    number = {2},
+    pages = {1--31},
+    url = {http://www.jstatsoft.org/v45/i02/},
+}
+
+@Manual{migui,
+    title = {\pkg{migui}: Graphical User Interface of the \pkg{mi} Package},
+    author = {Daniel~Lee and Yu-Sung~Su},
+    year = {2011},
+    note = {\proglang{R}~package version~0.00-09},
+    url = {http://CRAN.R-project.org/package=migui},
+}
+
+@Article{mice,
+    title = {\pkg{mice}: Multivariate Imputation by Chained Equations in R},
+    author = {Stef~{van Buuren} and Karin~Groothuis-Oudshoorn},
+    journal = {Journal of Statistical Software},
+    year = {2011},
+    volume = {45},
+    number = {3},
+    pages = {1--67},
+    url = {http://www.jstatsoft.org/v45/i03/},
+}
+
+@Article{amelia,
+    title = {\proglang{Amelia II}: A Program for Missing Data},
+    author = {James~Honaker and Gary~King and Matthew~Blackwell},
+    journal = {Journal of Statistical Software},
+    year = {2011},
+    volume = {45},
+    number = {7},
+    pages = {1--47},
+    url = {http://www.jstatsoft.org/v45/i07/},
+}
+
+@Manual{mip,
+    title = {\pkg{miP}: Multiple Imputation Plots},
+    author = {Paul~Brix},
+    year = {2012},
+    note = {\proglang{R}~package version~1.1},
+    url = {http://CRAN.R-project.org/package=miP},
+}
+
 @Manual{ggally,
     title = {\pkg{GGally}: Extension to \pkg{ggplot2}.},
-    author = {Barret~Schloerke and Jason~Crowley and Di~Cook and Heike~Hofmann and Hadley~Wickham},
-    year = {2012},
-    note = {\proglang{R}~package version~0.4.2},
+    author = {Barret~Schloerke and Jason~Crowley and Di~Cook and Heike~Hofmann and Hadley~Wickham and Francois~Briatte and Moritz~Marbach},
+    year = {2013},
+    note = {\proglang{R}~package version~0.4.4},
     url = {http://CRAN.R-project.org/package=GGally},
 }
 
 @Manual{gwidgets,
     title = {\pkg{gWidgets}: \pkg{gWidgets} API for Building Toolkit-independent, Interactive GUIs},
     author = {John~Verzani and Simon~Urbanek and Philippe~Grosjean and Michael~Lawrence},
-    year = {2011},
+    year = {2012},
     note = {\proglang{R}~package version~0.0-52},
     url = {http://CRAN.R-project.org/package=gWidgets},
 }
@@ -44,8 +93,16 @@
     title = {\pkg{VIM}: Visualization and Imputation of Missing Values},
     author = {Matthias~Templ and Andreas~Alfons and Alexander~Kowarik and Bernd~Prantner},
     year = {2013},
-    note = {\proglang{R}~package version~3.0.3},
+    note = {\proglang{R}~package version~4.0.0},
     url = {http://CRAN.R-project.org/package=VIM},
+}
+
+@Manual{VIMGUI,
+    title = {\pkg{VIMGUI}: Visualization and Imputation of Missing Values},
+    author = {Daniel~Schopfhauser and Matthias~Templ and Andreas~Alfons and Alexander~Kowarik and Bernd~Prantner},
+    year = {2013},
+    note = {\proglang{R}~package version~0.9.0},
+    url = {http://CRAN.R-project.org/package=VIMGUI},
 }
 
 @article{templ2008visualization,
@@ -113,4 +170,24 @@
   year = {2003}, 
   pages = {423--444},
   url={http://www.ggobi.org} 
+}
+
+@article{little1988test,
+  title={A test of missing completely at random for multivariate data with missing values},
+  author={Little, Roderick JA},
+  journal={Journal of the American Statistical Association},
+  volume={83},
+  number={404},
+  pages={1198--1202},
+  year={1988},
+  publisher={Taylor \& Francis Group}
+}
+
+@incollection{jaeger2006testing,
+  title={On testing the missing at random assumption},
+  author={Jaeger, Manfred},
+  booktitle={Machine Learning: ECML 2006},
+  pages={671--678},
+  year={2006},
+  publisher={Springer}
 }
