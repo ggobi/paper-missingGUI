@@ -88,35 +88,36 @@
 
 Missing values are a very common problem affecting data analysis. Many imputation methods are developed but little has been done for exploring the missing value structure visually.  Most plotting methods handle missing values by simply removing the incomplete records with or without a warning, especially when the data are continuous. Most statistical functions provide a limited list of handling missing values, such as delete all cases with missing, delete pairwise or on single variables only.
 
-The issue is that in order to decide what to do with the missing values before analyzing the data, we need to understand what the distribution of the missing values is, and how the missingness depends on the other collected variables. Some \proglang{R} packages, like \pkg{Hmisc} \citep{hmisc}, have some routines for summarizing the number of missing by variable, and by case, in preparation for imputing the missing values. To understand the distribution of missings versus non-missings we need to make plots of the data.
+The issue is that in order to decide what to do with the missing values before analyzing the data, we need to understand what the distribution of the missing values is, and how the missingness depends on the other collected variables. Some \proglang{R} packages, like \pkg{Hmisc} \citep{hmisc} and \pkg{norm} \citep{norm}, have some routines for summarizing the number of missing by variable, and by case, in preparation for imputing the missing values. To understand the distribution of missings versus non-missings we need to make plots of the data.
 
-On the other hand, for some model-based imputation methods, it is important to check the assumptions, like missing completely at random (MCAR) or missing at random (MAR), which are hard to verify. \citet{little1988test} provided the tests for MCAR under the normal assumption, and \citet{jaeger2006testing} proposed an MAR test under the distributional assumption. Both tests employed the likelihood inferences, and gave the caution that the tests for MAR and MCAR are sensitive to model misspecification \citep{little1988test}, or MAR is not testable \citep{jaeger2006testing}. Currently we do not find any \proglang{R} packages that can directly check the missingness assumptions, so a visual check will have some advantage.
+On the other hand, for some model-based imputation methods, it is important to check the assumptions, like missing completely at random (MCAR) or missing at random (MAR), which are hard to verify. \citet{little1988test} provided the tests for MCAR under the normal assumption, and \citet{jaeger2006testing} proposed an MAR test under the distributional assumption. Both tests employed the likelihood inferences, and gave the caution that the tests for MAR and MCAR are sensitive to model misspecification \citep{little1988test}, or MAR is not testable \citep{jaeger2006testing}. Currently we do not find any \proglang{R} packages that can directly check the missingness assumptions, so a visual check will have some advantages - it may not confirm any randomness assumption, but it helps to deny the MCAR, or suggest the conditioning variables for MAR.
 
 Some existing work describing the types of plots to explore missing data, and implementations, can be found in \citet{unwin1996interactive}, \citet{swayne1998missing}, and \citet{templ2008visualization}. First two of them use interactive graphics to help with the exploration. \proglang{MANET} implements the methods described in \citet{unwin1996interactive}. It presents the segmented barcharts of missing versus non-missing values for each variable. Since it has many plot types like histograms, scatterplots, mosaic plots, \proglang{MANET} encourages the user to select cases that are missing on any variable which highlights these cases in other plots enabling the user to explore the missing status dependence in the distributions of the complete cases of other variables.  \proglang{XGobi}, which implements the ideas described in \citet{swayne1998missing} provides more real-valued data tools. It creates a shadow matrix of the original data where entries are 0 (complete) or 1 (missing value). This additional data structure allows the user to explore the multivariate pattern of missing values, and to explore dependence between missing value status and distribution of the complete cases. Again, linked brushing is used, and rudimentary imputation methods are available in \proglang{GGobi} \citep{STLBC03}.
 
-In \proglang{R} community, package \pkg{VIM} \citep{VIM} provides a graphical user interface via \pkg{VIMGUI} \citep{VIMGUI}, to explore the structure of missing values and quality of several single imputation methods (kNN, hotdeck, irmi). Several other packages for multiple imputation have interfaces for easy manipulation. For example, \pkg{migui} \citep{migui} is an interface for \pkg{mi} \citep{mi}, which uses Bayesian models and weakly informative prior distributions; function \code{AmeliaView()} in \pkg{Amelia} \citep{amelia}, could generate a graphical interface, to implement its EM with bootstrapping algorithm. Meanwhile the package \pkg{miP} \citep{mip} adopts \pkg{VIM} to visulize the imputation results from packages \pkg{mice} \citep{mice}, \pkg{mi}, and \pkg{Amelia}.
+In the \proglang{R} community, package \pkg{VIM} \citep{VIM} provides a graphical user interface via \pkg{VIMGUI} \citep{VIMGUI}, to explore the structure of missing values and quality of several single imputation methods (kNN, hotdeck, irmi). Some packages for multiple imputation have interfaces for easy manipulation. For example, \pkg{migui} \citep{migui} is an interface for \pkg{mi} \citep{mi}, which implements multiple imputation via Bayesian models and weakly informative prior distributions; function \code{AmeliaView()} in \pkg{Amelia} \citep{amelia}, would generate a graphical interface, to implement its ``EM with bootstrapping'' algorithm. Meanwhile the package \pkg{miP} \citep{mip} adopts \pkg{VIM} to visulize the imputation results from packages \pkg{mice} \citep{mice}, \pkg{mi}, and \pkg{Amelia}.
 
-This current work describes a new package for \proglang{R}, \pkg{MissingDataGUI}, which allows the exploration of missing values structure, and results of imputation, using static graphics and numerical summaries. A GUI makes it accessible to novice users. This work builds on the ideas developed in \citet{unwin1996interactive} and \citet{swayne1998missing}. This package utilizes routines in \pkg{Hmisc}, \pkg{norm} \citep{norm}, \pkg{mice}, and \pkg{mi} for multiple imputation, as well as several routines for the single imputation. The paper is structured as follows. Section 2 explains what is done in GUI and why. Section 3 describes the design of GUI and gives an example. The last section discusses future work.
+This current work describes a new package for \proglang{R}, \pkg{MissingDataGUI}, which allows the exploration of missing values structure, and comparison among the imputation results, using static graphics and numerical summaries. A GUI makes it accessible to novice users. This work builds on the ideas developed in \citet{unwin1996interactive} and \citet{swayne1998missing}. This package utilizes routines in \pkg{Hmisc}, \pkg{norm}, \pkg{mice}, and \pkg{mi} for multiple imputation, as well as several routines including kNN and random sample for the single imputation. The paper is structured as follows. Section \ref{Functionality} explains what is done in GUI and why. Section \ref{Examples} describes the design of GUI and gives an example. The last section discusses future work.
 
-\section{Functionality}
-
-\subsection{Overview of the missing data GUI}
-
-The missing data GUI looks as Figure~\ref{fig: missingGUI}. All variables with the classes and the percentages of \code{NA}'s are listed on the top left (area 1). The categorical variables are shown on the bottom left as the conditions (area 2). The variables having missing values are displayed under ``Color.by.the.missing.of'' on the top center (area 3). The first row ``Missing Any Variables'' in the list means whether the case has missing values in any variables, and the second row ``Missing on Selected Variables'' means whether the case has missings in those variables selected in area 1. ``Imputation Method'' (area 4) and ``Graph Type'' (area 5) are two radios interpreted in section 2.2 and 2.3. Five buttons on the top right (area 6) are: ``Numeric summary'' which will create a window like Figure~\ref{fig: num-summry}; ``plot'' which produces the plots in the graphics device on the bottom right of GUI (area 7); ``Export the data'' which will save the imputed data into a data file or to \proglang{R} console; ``Save the plot'' which could save the plot in area 7 to a png file; ``Quit'' which will destroy the main GUI window and the derived child windows.
 
 \begin{center}
 \begin{figure}[h]
 \begin{centering}
 \includegraphics[width=.9\textwidth]{graph/fig1-GUI-tab1}
 \par\end{centering}
-\caption{Overview of the missing data GUI. Region 1 contains the list of variables, variable type, and summary of missings on that variable. Region 2 has a list of the categorical variables that can be used to conditionally impute values. Region 3 lists the variables with missing values to enable coloring by different types of missingness in the plots. Region 4 contains a radio button selection of imputation methods. Region 5 has several plot type selections, and section 6 allows selecting numeric or graphical summaries and some output routines. The summaries are displayed in the region 7.}
+\caption{Overview of the missing data GUI. Region 1 contains the list of variables, variable type, and summary of missings on that variable. Region 2 has a list of the categorical variables that can be conditioned on. Region 3 lists the variables having missing values, to enable coloring by different types of missingness in the plots. Region 4 contains a radio button selection of imputation methods. Region 5 has several plot type selections, and section 6 allows selecting numeric or graphical summaries and some output routines. The summaries are displayed in the region 7.}
 \end{figure}
-\label{fig: missingGUI}
+\label{fig:missingGUI}
 \par\end{center}
 
-\subsection{Summary of missing values}
+\section{Functionality}\label{Functionality}
 
-To investigate missingness in a data set, numerical summaries of the missings are initially calculated, as shown in Figure~\ref{fig: num-summry}. The information at the top of the window contains the percent of the values that are missing, along with the percent of variables that contain missing values and the percent of the cases that have at least one missing value. Below this is a tabulation of the number of values missing per case - here at most 2 cases have 3 missing values, another 2 have 2 missing values, 167 cases have one missing value and there are 565 complete cases. In terms of percentages, 76.8\% of the cases are complete. This follows the style of the \pkg{norm} package for summarizing missingness.
+\subsection{Overview of the missing data GUI}
+
+The missing data GUI looks as Figure~\ref{fig:missingGUI}. All variables with the classes and the percentages of \code{NA}'s are listed on the top left (area 1). The categorical variables, auto-detected by their classes, are shown on the bottom left as the potential conditions (area 2). The variables having missing values are displayed under ``Color.by.the.missing.of'' on the top center (area 3). The graphical summary will distinguish the imputations from the observations by two colors, yellow versus blue. This panel is used to name the variables that will determine the color. Selecting the first row ``Missing Any Variables'' means that the color will depend on whether the case has missing values in any variables. The second row ``Missing on Selected Variables'' means the graph is colored by whether the case has missings in the variables selected in area 1. ``Method'' (area 4) and ``Graph Type'' (area 5) are two widgets illustrated in section \ref{imputation} and \ref{plottype}. On the top right (area 6) there are five buttons: ``Summary'' can create a window as described in section \ref{numsum}; ``Plot'' produces the plots in the graphics panel on the bottom right of GUI (area 7); ``Export data'' saves the imputed data into a file or to \proglang{R} console; ``Save plot'' saves the plots in area 7 to png files; ``Quit'' destroys the main GUI window and the derived child windows.
+
+\subsection{Summary of missing values}\label{numsum}
+
+To investigate missingness in a data set, numerical summaries of the missings should be presented. As Figure~\ref{fig: num-summry} shows, the ``Summary'' button will open a window with the overall missingness information (left panel) or conditioning summary (right panel), depending on whether the conditioning variables are chosen in area 2. Both summary windows present the percent of the values that are missing, the percent of variables that contain missing values, the percent of the cases that have at least one missing value, along with a tabulation of the number of values missing per case. The style of the table follows package \pkg{norm}.  In Figure~\ref{fig: num-summry} (left) no conditioning variables are selected. We find two observations have 3 missing values, another 2 have 2 missing values, 167 observations have one missing value and 565 are complete. In terms of percentages, 76.8\% of the cases have no missings. Figure~\ref{fig: num-summry} (right) is conditioned on the variable ``year'', which produced two boxes for 1993 and 1997 respectively. We can see that there are less \code{NA}'s in year 1997 than 1993, and all the observations having more than 1 missings appeared in 1993.
 
 \begin{center}
 \begin{figure}[h]
@@ -124,57 +125,129 @@ To investigate missingness in a data set, numerical summaries of the missings ar
 \includegraphics[width=0.33\textwidth]{graph/fig2-summary-1}
 \includegraphics[width=0.66\textwidth]{graph/fig2-summary-2-condition}
 \par\end{centering}
-\caption{A numerical summary of missing values in the data is shown in a pop-up window.  The percentage of missings by total number of data values, by variables and by cases, is shown on the top. This dataset has 8 variables and the missing values across variables is summarized in the bottom table. No cases have more than 3 missing values.  76.8\% of cases are complete, 22.7\% of cases have one missing value, and only 4 cases have more than one missing values.}
+\caption{A numerical summary of missing values in the data is shown in a pop-up window. The left panel is given by unchecking any of the variables in region 2 of Figure~\ref{fig:missingGUI}. The percentages of missings by total number of data values, by variables and by cases, is shown on the top. This dataset has 8 variables and the missing values across variables is summarized in the bottom table. No cases have more than 3 missing values.  76.8\% of cases are complete, 22.7\% of cases have one missing value, and only 4 cases have more than one missing values. The right panel has the conditioning variable ``year'' checked in region 2, and provides the similar summaries for every category of the variable year.}
 \label{fig: num-summry}
 \end{figure}
 \par\end{center}
 
-\subsection{Imputation}
+\subsection{Imputation}\label{imputation}
 
-A number of imputation methods are available in the package. The purpose of these is not only to examine the dependence between missings or non-missings, but also to produce a complete data set for later analysis.  The eight imputation methods available are: 
-``Below 10\%'', ``Median'', ``Mean'', 
-``Random value'', ``Regression'', ``Nearest neighbor'', 
-``Multiple imputation'', ``Mode''. 
-The first four, as well as ``Mode'', are imputations on individual variables, and the remainder  ``Regression'', ``Nearest neighbor'', and ``Multiple imputation'' are imputations on the joint distribution of two or more  variables.
+A number of imputation methods are available in the package. The purpose of these is not only to examine the dependence between missings or non-missings, but also to produce a complete data set for later analysis.
+
+The seven imputation methods available are: 
+``Below 10\%'', ``Simple'', ``Neighbor'', ``MI:areg'', ``MI:norm'', ``MI:mice'', ``MI:mi''. 
+In fact, ``Simple'' and ``Neighbor'' contains more than one method. As shown in the tab labels of Figure~\ref{fig:missingGUI} area 7, three basic imputing methods are provided for ``Simple'': overall median, mean/mode, and random value. ``Neighbor'' contains two methods: mean of the nearest neighbors, and random nearest neighbor. The neighbor methods allow the user to change the number of neighbors.
+
+Table~\ref{tab:compare-methods} compares all the methods.
+
+\begin{center}
+\begin{table}[h]
+\begin{centering}
+{\scriptsize{}}
+\begin{tabular}{|l|l|c|c|c|}
+\hline 
+{\scriptsize{Method}} & {\scriptsize{Description}} & {\scriptsize{Determinisitic}} & {\scriptsize{Univariate}} & {\scriptsize{Multiple imp.}}\tabularnewline
+\hline 
+{\scriptsize{Below 10\%}} & {\scriptsize{below 10\% of the range}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline
+\hline 
+{\scriptsize{Simple}} & {\scriptsize{overall median}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline
+{\scriptsize{Simple}} & {\scriptsize{overall mean/mode}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline 
+{\scriptsize{Simple}} & {\scriptsize{random value}} &  & {\scriptsize{yes}} & \tabularnewline
+\hline
+{\scriptsize{Neighbor}} & {\scriptsize{mean of the nearest neighbors}} & {\scriptsize{yes}} &  & \tabularnewline
+{\scriptsize{Neighbor}} & {\scriptsize{random nearest neighbor}} &  &  & \tabularnewline
+\hline 
+{\scriptsize{MI:areg}} & {\scriptsize{predictive mean matching}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:norm}} & {\scriptsize{multivariate normal model}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:mice}} & {\scriptsize{multivariate imp. by chained equations}} &  & {\scriptsize{maybe}} & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:mi}} & {\scriptsize{multiple iterative regression imputation}} &  &  & {\scriptsize{yes}}\tabularnewline
+\hline 
+\end{tabular}
+\par\end{centering}{\scriptsize \par}
+\caption{\label{tab:compare-methods}Comparison among the methods. ``Deterministic''
+means whether the result is deterministic or random. ``Univariate''
+means whether the imputation only uses the individual variable where
+imputation is needed, or makes use of other variables as well. ``Multiple
+imp.'' indicates whether the methods is a type of multiple imputation.}
+\end{table}
+\par\end{center}
+
 
 \subsubsection{Univariate imputations}
 
 The simplest example is setting the missing values to 10\% below the minimum of each variable. The purpose of this approach is to demonstrate the missing values in a place where they can be distinguished from the non-missing values. In a scatterplot, all missing values will lie along a vertical line on the left or a horizontal line on the bottom of the display (Figure~\ref{fig:univariate-imputation} (a)). In the histogram, missing values will form a bar to the left of other data values. And in the parallel coordinates plot, the missing values are at the bottom of each axis.
 
-Using the median, mean or mode of the complete cases on a variables is a common way to impute missing values. The median and mean are used for the continuous variables, and mode is used for categorical variables. The mean imputation keeps the variable mean as that of the complete cases. For a categorical variable, using the mode imputes the missing as the most common category. To examine the location of these imputed values as well as the complete values in graphs, points and bars are colored according to the missing status of the case. Figure~\ref{fig:univariate-imputation} (b) and (c) give an example of the imputation by median and mean for real-valued variables.
+Using the median, mean/mode of the complete cases on a variables is a common way to impute missing values. The median of a categorical variable is defined as the the most frequent category. With the mean/mode method, the continuous variables will obtain the imputation by the mean of the complete cases, and the categorical variables will get the mode, i.e., the most common category. To examine the location of these imputed values as well as the complete values in graphs, points and bars are colored according to the missing status of the case. Figure~\ref{fig:univariate-imputation} (b) and (c) give an example of the imputation by median and mean for real-valued variables.
 
-Choosing a ``random value''  will randomly select from the complete cases of a variable to impute the missing values, as shown in Figure~\ref{fig:univariate-imputation} (d).
+The ``random value'' method  will randomly select from the complete cases of a variable to impute the missing values, as shown in Figure~\ref{fig:univariate-imputation} (d).
 
-Because these imputation methods operate separately on each variable, the resulting data have different covariance and correlation estimates. In some circumstances this may still enable reasonable further analysis.
+Because these imputation methods operate separately on each variable, the resulting data will probably have different covariance and correlation estimates. In some circumstances it may lead to the biased estimation, but in some circumstances this is a simple and efficient way to visualize the missing values with non-missings, and still enable reasonable further analysis.
+
 
 \begin{center}
 \begin{figure}[h]
 \begin{centering}
-\includegraphics[width=0.32\textwidth]{graph/fig3-1-below10} 
-\includegraphics[width=0.32\textwidth]{graph/fig3-2-median}
-\includegraphics[width=0.32\textwidth]{graph/fig3-3-mean} 
+\begin{tabular}{cccc}
+{\tiny{(a) Below 10\%}} &  &  & {\tiny{(b) Overall median}}\tabularnewline
+\includegraphics[width=0.32\textwidth]{graph/fig3-1-below10} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-2-median}\tabularnewline
+{\tiny{(c) Overall mean}} &  &  & {\tiny{(d) Random value}}\tabularnewline
+\includegraphics[width=0.32\textwidth]{graph/fig3-3-mean} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-4-random}\tabularnewline
+\end{tabular}
 \par\end{centering}
-
-\begin{centering}
-\includegraphics[width=0.32\textwidth]{graph/fig3-4-random}
-\includegraphics[width=0.32\textwidth]{graph/fig3-5-knn}
-\includegraphics[width=0.32\textwidth]{graph/fig3-5-knn-2}
-\par\end{centering}
-
-\caption{Four panels of scatterplots displaying the results of different univariate imputations (cyan=missing, peach=not missing): (a) 10\% below the minimum (not strictly an imputation method, it is used more for displaying missings as part of a plot of complete cases); (b) median of each variable; (c) mean of each variable; (d) random selection from the complete cases. }
+\caption{Four panels of scatterplots displaying the results of different univariate imputations: (a) 10\% below the minimum (not strictly an imputation method, it is used more for displaying missings as part of a plot of complete cases); (b) median of each variable; (c) mean of each variable; (d) random selection from the complete cases. }
 \end{figure}
 \label{fig:univariate-imputation}
 \par\end{center}
 
+
+\subsubsection{Neighbor imputations}
+
+The ``Neighbor'' methods replaces a missing value with the mean or a random value of its $k$ nearest neighbors by the Euclidean distance (Figure~\ref{fig:neighbor-imputation}). If there are ties in the distance ranking, then only the first $k$ points are used, regardless to the tie. This method requires at least one case in the dataset to be complete, and no character variables. If there are less than $k$ complete cases, the mean of them will be imputed. If none of the cases are complete, then the mean or a random value of the variables will be returned. The algorithm and code to get the $k$ nearest neighbors are attached in the Appendix.
+
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\begin{tabular}{cccc}
+{\tiny{(a) Mean of the neighbors}} &  &  & {\tiny{(b) Random neighbor}}\tabularnewline
+\includegraphics[width=0.32\textwidth]{graph/fig3-5-knn} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-5-knn-2}\tabularnewline
+\end{tabular}
+\par\end{centering}
+\caption{Scatterplots for two neighbor imputation methods. (a) mean of the 5 nearest neighbors; (b) a random value from the 5 nearest neighbors.}
+\end{figure}
+\label{fig:neighbor-imputation}
+\par\end{center}
+
+
 \subsubsection{Multiple imputations}
 
-These methods will conduct imputation on the joint distribution of the selected variables. 
+The multiple imputation methods conduct imputation on the joint distribution of the selected variables. 
 
-The ``regression'' method uses function \code{aregImpute} from package \pkg{Hmisc}. The function provides multiple imputation using additive regression, bootstrapping, and predictive mean matching \citep{hmisc}. The ``multiple imputation'' method uses functions from package \pkg{norm}. The process generates samples from a multivariate normal model with estimated parameters via EM algorithm \citep{norm}, so it requires all of the selected variables to be numeric (at least integers).
+The ``MI:areg'' method uses function \code{aregImpute} from package \pkg{Hmisc}. The function provides multiple imputation using additive regression, bootstrapping, and predictive mean matching \citep{hmisc}. The ``MI:norm'' method uses functions from package \pkg{norm}. The process generates samples from a multivariate normal model with estimated parameters via EM algorithm \citep{norm}, so it requires all of the selected variables to be numeric (at least integers).
 
-The ``nearest neighbor'' method replaces a missing value with the mean of its 5 nearest neighbors by squared Euclidean distance. If there are ties in the distance ranking, then only the first five points are used, regardless to the tie. This method requires at least one case in the dataset to be complete, and no character variables. If there are less than five complete cases, the mean of them will be imputed. If none of the cases are complete, then the median of each variable is returned. The algorithm and code is described in the Appendix.
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\begin{tabular}{cccc}
+{\tiny{(a) \pkg{Hmisc}: predictive mean matching}} &  &  & {\tiny{(b) \pkg{norm}: multivariate normal model}}\tabularnewline
+\includegraphics[width=0.32\textwidth]{graph/fig3-6-areg} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-7-norm}\tabularnewline
+{\tiny{(c) \pkg{mice}: chained equations}} &  &  & {\tiny{(d) \pkg{mi}: iterative regression}}\tabularnewline
+\includegraphics[width=0.32\textwidth]{graph/fig3-8-mice} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-9-mi}\tabularnewline
+\end{tabular}
+\par\end{centering}
+\caption{Scatterplots for the multiple imputations from four \proglang{R} packages: (a) predictive mean matching by \pkg{Hmisc}; (b) multivariate normal model by \pkg{norm}; (c) multivariate imputation by chained equations by \pkg{mice}; (d) multiple iterative regression imputation by \pkg{mi}.}
+\end{figure}
+\label{fig:multiple-imputation}
+\par\end{center}
 
 The strength of the above methods includes 1) they incorporate covariance information when calculating imputed values, and  2) ``regression'' and ``nearest neighbor'' can accommodate both continuous and categorical data.
+
+\subsubsection{Conditional on the categorical variables}
+
+When the variables of interest are bimodal or multi-modal, using the center statistics like mean or median as the imputations is inadequate because the center can not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to use the group means or medians instead of the population mean or median.
+
+The implementation of this idea produces the widget named ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. The procedure is as computing based on a conditional model given the category. However, the condition is invalid when the imputation method is ``Below 10\%'', since the aim of ``Below 10\%'' is only displaying the missings away from the non-missings, but giving the condition will mix the points again.
+
+The role of conditions in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a much better imputation (Figure~\ref{fig: condition} right).
 
 \begin{center}
 \begin{figure}[h]
@@ -187,15 +260,8 @@ The strength of the above methods includes 1) they incorporate covariance inform
 \end{figure}
 \par\end{center}
 
-\subsubsection{Conditional on the categorical variables}
 
-When the variables of interest are bimodal or multi-modal, using the center statistics like mean or median as the imputations is inadequate because the center can not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to use the group means or medians instead of the population mean or median.
-
-The implementation of this idea produces the widget named ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. The procedure is as computing based on a conditional model given the category. However, the condition is invalid when the imputation method is ``Below 10\%'', since the aim of ``Below 10\%'' is only displaying the missings away from the non-missings, but giving the condition will mix the points again.
-
-The role of conditions in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a much better imputation (Figure~\ref{fig: condition} right).
-
-\subsection{Plot types}
+\subsection{Plot types}\label{plottype}
 
 \begin{center}
 \begin{figure}[h]
@@ -318,7 +384,7 @@ In this part some additional features of the missing data GUI are explained.
 \par\end{center}
 
 
-\section{Examples}
+\section{Examples}\label{Examples}
 
 \subsection{Data}
 
@@ -386,19 +452,24 @@ This work was partially supported by an unrestricted fellowship from Novartis, a
 # k is the number of neighbors picked for the imputation
 kNN_imp = function(dat, k){
   myNNdat = dat[complete.cases(dat), ]
+  res1 = res2 = dat
   for (i in which(!complete.cases(dat))) {
     usecol = which(!is.na(dat[i, ]))
     if (length(usecol) > 0) {
       NNdat = myNNdat
       a = rbind(dat[i, ], NNdat)[, usecol]
-      NNdat$distance = dist(a)[1:nrow(NNdat)]
+      b = apply(a, 2, scale)
+      NNdat$distance = dist(b)[1:nrow(NNdat)]
       NNdat = NNdat[order(NNdat$distance, decreasing = FALSE), ]
       kNNdat = NNdat[1:min(k, nrow(NNdat)), ]
-      dat[i, -usecol] = colMeans(kNNdat[, -usecol, drop=FALSE])
+      res1[i, -usecol] = colMeans(kNNdat[, -usecol, drop=FALSE])
+      res2[i, -usecol] = kNNdat[sample(1:nrow(kNNdat),1), -usecol]
     } else {
-      dat[i, ] = sapply(dat, median, na.rm=TRUE)
+      res1[i, ] = sapply(dat, mean, na.rm=TRUE)
+      res2[i, ] = sapply(dat,function(x) sample(na.omit(x),1))
     }
   }
+  return(list(res1,res2))
 }
 \end{Code}
 
