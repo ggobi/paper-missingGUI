@@ -90,11 +90,11 @@ Missing values are a very common problem affecting data analysis. Many imputatio
 
 The issue is that in order to decide what to do with the missing values before analyzing the data, we need to understand what the distribution of the missing values is, and how the missingness depends on the other collected variables. A few \proglang{R} packages, like \pkg{Hmisc} \citep{hmisc}, \pkg{norm} \citep{norm}, and \pkg{mice} \citep{mice}, have some routines for summarizing the number of missing by variable, and by case, in preparation for imputing the missing values. To understand the distribution of missings versus non-missings we need to make plots of the data.
 
-On the other hand, for some model-based imputation methods, it is important to check the assumptions, like missing completely at random (MCAR) or missing at random (MAR), but they are not easy to verify. \citet{little1988test} provided the tests for MCAR under the normal assumption, and \citet{jaeger2006testing} proposed an MAR test under the distributional assumption. Both tests employed the likelihood inferences, and gave the caution that the tests for MAR and MCAR are sensitive to model misspecification \citep{little1988test}, or MAR is non-testable \citep{jaeger2006testing}. Currently we do not find any \proglang{R} packages that can directly check the missingness assumptions, so a visual check will have some advantages - it may not confirm any randomness assumption, but it helps to deny the MCAR, or suggest the conditioning variables for MAR.
+On the other hand, for some model-based imputation methods, it is important to check the assumptions, like missing completely at random (MCAR) or missing at random (MAR), but they are not easy to verify. \citet{little1988test} provided the tests for MCAR under the normality assumption, and \citet{jaeger2006testing} proposed an MAR test under the distributional assumption. Both tests employed the likelihood inferences, and gave the caution that the tests for MAR and MCAR are sensitive to model misspecification \citep{little1988test}, and MAR is non-testable without further assumptions \citep{jaeger2006testing}. Currently we do not find any \proglang{R} packages that can directly check the missingness assumptions, so a visual check will have some advantages - it may not confirm any randomness assumption, but it helps to deny the MCAR, or suggest the conditioning variables for MAR.
 
 Some existing work describing the types of plots to explore missing data, and implementations, can be found in \citet{unwin1996interactive}, \citet{swayne1998missing}, and \citet{templ2008visualization}. First two of them use interactive graphics to help with the exploration. \proglang{MANET} implements the methods described in \citet{unwin1996interactive}. It presents the segmented barcharts of missing versus non-missing values for each variable. Since it has many plot types like histograms, scatterplots, mosaic plots, \proglang{MANET} encourages the user to select cases that are missing on any variable which highlights these cases in other plots enabling the user to explore the missing status dependence in the distributions of the complete cases of other variables.  \proglang{XGobi}, which implements the ideas described in \citet{swayne1998missing} provides more real-valued data tools. It creates a shadow matrix of the original data where entries are 0 (complete) or 1 (missing value). This additional data structure allows the user to explore the multivariate pattern of missing values, and to explore dependence between missing value status and distribution of the complete cases. Again, linked brushing is used, and rudimentary imputation methods are available in \proglang{GGobi} \citep{STLBC03}.
 
-In the \proglang{R} community, package \pkg{VIM} \citep{VIM} provides a graphical user interface via \pkg{VIMGUI} \citep{VIMGUI}, to explore the structure of missing values and quality of several single imputation methods (kNN, hotdeck, irmi). Some packages for multiple imputation have interfaces for easy manipulation. For example, \pkg{migui} \citep{migui} is an interface for \pkg{mi} \citep{mi}, which implements multiple imputation via Bayesian models and weakly informative prior distributions; function \code{AmeliaView()} in \pkg{Amelia} \citep{amelia}, would generate a graphical interface, to implement its ``EM with bootstrapping'' algorithm. Meanwhile the package \pkg{miP} \citep{mip} adopts \pkg{VIM} to visulize the imputation results from packages \pkg{mice}, \pkg{mi}, and \pkg{Amelia}.
+In the \proglang{R} community, package \pkg{VIM} \citep{VIM} provides a graphical user interface via \pkg{VIMGUI} \citep{VIMGUI}, to explore the structure of missing values and quality of several single imputation methods (kNN, hotdeck, irmi). Some packages for multiple imputation have interfaces for easy manipulation. For example, \pkg{migui} \citep{migui} is an interface for \pkg{mi} \citep{mi}, which implements multiple imputation via Bayesian models and weakly informative prior distributions; function \code{AmeliaView()} in \pkg{Amelia} \citep{amelia}, would generate a graphical interface, to implement its ``EM with bootstrapping'' algorithm. Meanwhile the package \pkg{miP} \citep{mip} adopts \pkg{VIM} to visualize the imputation results from packages \pkg{mice}, \pkg{mi}, and \pkg{Amelia}.
 
 This current work describes a new package for \proglang{R}, \pkg{MissingDataGUI}, which allows the exploration of missing values structure, and comparison among the imputation results, using static graphics and numerical summaries. A GUI makes it accessible to novice users. This work builds on the ideas developed in \citet{unwin1996interactive} and \citet{swayne1998missing}. Meanwhile, the package utilizes routines in \pkg{Hmisc}, \pkg{norm}, \pkg{mice}, and \pkg{mi} for multiple imputation, with several other routines including kNN and random sample for the single imputation. The paper is structured as follows. Section \ref{Functionality} shows the design of GUI and explains what is done in GUI and why. Section \ref{Examples} gives an example. The last section discusses future work.
 
@@ -132,7 +132,7 @@ To investigate missingness in a data set, numerical summaries of the missings sh
 
 \subsection{Imputation}\label{imputation}
 
-A number of imputation methods are available in the package. The purpose of these is not only to examine the dependence between missings or non-missings, but also to produce a complete data set for later analysis. A few criteria were considered to improve user experience: (1) easy to understand and implement; (2) computing complexity is medium or low; (3) adaptability to different situations, i.e., not need strong model assumptions.
+A number of imputation methods are available in the package. The purpose of these is not only to examine the dependence between missings or non-missings, but also to produce a complete data set for later analysis. A few criteria were considered to improve user experience: (1) easy to understand and implement; (2) computing complexity is medium or low; (3) adaptability to different situations, i.e., not need strong model assumptions. However, not all the methods that follows the criteria are applied in our package, because (1) there are plenty of methods as well as their variations, it is not practical to list them all; and (2) users may try their own method and import the result to missing data GUI.
 
 The seven imputation methods provided are: 
 ``Below 10\%'', ``Simple'', ``Neighbor'', ``MI:areg'', ``MI:norm'', ``MI:mice'', ``MI:mi''. 
@@ -147,30 +147,33 @@ Table~\ref{tab:compare-methods} compares all the methods.
 \hline 
 \textbf{\scriptsize{Method}} & \textbf{\scriptsize{Description}} & \textbf{\scriptsize{Determinisitic}} & \textbf{\scriptsize{Univariate}} & \textbf{\scriptsize{Multiple imp.}}\tabularnewline
 \hline 
-{\scriptsize{Below 10\%}} & {\scriptsize{below 10\% of the range}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline
+{\scriptsize{Below 10\%}} & {\scriptsize{below 10\% of the range}} & {\scriptsize{x}} & {\scriptsize{x}} & \tabularnewline
 \hline 
- & {\scriptsize{overall median}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline
-{\scriptsize{Simple}} & {\scriptsize{overall mean/mode}} & {\scriptsize{yes}} & {\scriptsize{yes}} & \tabularnewline 
- & {\scriptsize{random value}} &  & {\scriptsize{yes}} & \tabularnewline
+ & {\scriptsize{overall median}} & {\scriptsize{x}} & {\scriptsize{x}} & \tabularnewline
+{\scriptsize{Simple}} & {\scriptsize{overall mean/mode}} & {\scriptsize{x}} & {\scriptsize{x}} & \tabularnewline 
+ & {\scriptsize{random value}} &  & {\scriptsize{x}} & \tabularnewline
 \hline
-{\scriptsize{Neighbor}} & {\scriptsize{mean of the nearest neighbors}} & {\scriptsize{yes}} &  & \tabularnewline
+{\scriptsize{Neighbor}} & {\scriptsize{mean of the nearest neighbors}} & {\scriptsize{x}} &  & \tabularnewline
  & {\scriptsize{random nearest neighbor}} &  &  & \tabularnewline
 \hline 
-{\scriptsize{MI:areg}} & {\scriptsize{predictive mean matching}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:areg}} & {\scriptsize{predictive mean matching}} &  &  & {\scriptsize{x}}\tabularnewline
 \hline 
-{\scriptsize{MI:norm}} & {\scriptsize{multivariate normal model}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:norm}} & {\scriptsize{multivariate normal model}} &  &  & {\scriptsize{x}}\tabularnewline
 \hline 
-{\scriptsize{MI:mice}} & {\scriptsize{multivariate imp. by chained equations}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:mice}} & {\scriptsize{multivariate imp. by chained equations}} &  &  & {\scriptsize{x}}\tabularnewline
 \hline 
-{\scriptsize{MI:mi}} & {\scriptsize{multiple iterative regression imputation}} &  &  & {\scriptsize{yes}}\tabularnewline
+{\scriptsize{MI:mi}} & {\scriptsize{multiple iterative regression imputation}} &  &  & {\scriptsize{x}}\tabularnewline
 \hline 
 \end{tabular}
 \par\end{centering}
-\caption{Comparison among the methods. ``Deterministic''
+\caption{Imputation methods included in missing data GUI. Strictly speaking, 
+``Below 10\%'' is not an imputation method, but a way to put the missing 
+values in the same graph with the observations. ``Deterministic''
 means whether the result is deterministic or random. ``Univariate''
 means whether the imputation only uses the individual variable where
 imputation is needed, or makes use of other variables as well. ``Multiple
-imp.'' indicates whether the methods is a type of multiple imputation.}
+imp.'' indicates whether the methods is a type of multiple imputation that 
+will provide multiple samples to impute the missings.}
 \label{tab:compare-methods}
 \end{table}
 \par\end{center}
@@ -183,9 +186,6 @@ The simplest example is setting the missing values to 10\% below the minimum of 
 Using the median, mean, or mode of the complete cases is a common way to impute missing values. The median of a categorical variable is defined as the the most frequent category. With the mean/mode method, the missing values of a continuous variable are imputed by the mean of the complete cases, and that of a categorical variables will be imputed by the mode, i.e., the most common category. In the graph, points and bars are colored according to the missing status of the case. Figure~\ref{fig:univariate-imputation} (b) and (c) give an example of the imputation by median and mean for real-valued variables.
 
 The ``random value'' method (Figure~\ref{fig:univariate-imputation} (d)) randomly selects an existing value of the variable to impute the missing. If there are more than one missing values in an observation, then they will be imputed respectively.
-
-Because the above imputation methods operate separately on each variable, the dependencies between variables are ignored, and probably the methods will give biased covariance and correlation estimates. This is an issue in some circumstances, but sometimes it can be treated as a convenient and efficient way to visualize the missing values versus non-missings, standing up with other accurate but complicated methods. Inversely, a good visualization could help to check whether the univariate substitution is reasonable.
-
 
 \begin{center}
 \begin{figure}[h]
@@ -202,14 +202,12 @@ Because the above imputation methods operate separately on each variable, the de
 \end{figure}
 \par\end{center}
 
+Because the above imputation methods operate separately on each variable, the dependencies between variables are ignored, and probably the methods will give biased covariance and correlation estimates. This is an issue in some circumstances, but sometimes it can be treated as a convenient and efficient way to visualize the missing values versus non-missings, standing up with other accurate but complicated methods. Inversely, a good visualization could help to check whether the univariate substitution is reasonable.
+
 
 \subsubsection{Neighbor imputations}
 
-The ``Neighbor'' methods replaces a missing value with the mean or a random value of its $k$ nearest complete neighbors (Figure~\ref{fig:neighbor-imputation}). The distance between two observations is the Euclidean distance on the standardized variables that have no missings. Figure~\ref{fig:neighbor-diagram} explains the procedure. Ties are not considered, and only the first $k$ entries are used. This method requires at least one case in the dataset to be complete, and no character variables (ordinal variables are treated as integers). If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. $k$ is editable, and by default $k=5$.
-
-The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weights on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
-
-%The methods should work well when the set of complete observations is large, but when there are few fully observations, the imputation may be biased due to too much waste information. 
+The ``Neighbor'' methods replaces a missing value with the mean or a random value of its $k$ nearest complete neighbors (Figure~\ref{fig:neighbor-imputation}). The distance between two observations is the Euclidean distance on the standardized variables that have no missings. Figure~\ref{fig:neighbor-diagram} explains the procedure. Ties are not considered, and only the first $k$ entries are used. 
 
 \begin{center}
 \begin{figure}[h]
@@ -224,7 +222,6 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \end{figure}
 \par\end{center}
 
-
 \begin{center}
 \begin{figure}[h]
 \begin{centering}
@@ -235,12 +232,16 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \end{figure}
 \par\end{center}
 
+This method requires at least one case in the dataset to be complete, and no character variables (ordinal variables are treated as integers). If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. $k$ is editable, and by default $k=5$.
+
+%The methods should work well when the set of complete observations is large, but when there are few fully observations, the imputation may be biased due to too much waste information. 
+
+The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weights on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
+
 
 \subsubsection{Multiple imputations}
 
 Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by the simulation approach. Multiple imputed datasets are generated based on the joint distribution to serve a wide variety of analytical goals.
-
-As introduced in Section \ref{introduction}, four \proglang{R} packages are utilized to implement multiple imputations. Figure~\ref{fig:multiple-imputation} demonstrates the results of four packages on the same data. 
 
 \begin{center}
 \begin{figure}[h]
@@ -257,37 +258,38 @@ As introduced in Section \ref{introduction}, four \proglang{R} packages are util
 \end{figure}
 \par\end{center}
 
-Within the four packges, \pkg{norm} is very different from the other three. \citet{schafer1998multiple} introduced the basic idea of \pkg{norm}. It assumes the observations are sampled from a multivariate normal distribution, and uses EM algorithm to estimate the mean and variance-covariance matrix. Then it utilizes data augmentation method to converge the distribution. 
+As introduced in Section \ref{introduction}, four \proglang{R} packages are utilized to implement multiple imputations. Figure~\ref{fig:multiple-imputation} demonstrates the results of four packages on the same data. 
 
-All the other three packages are using the chained equation approach with similar steps and slightly different settings. A comparison between the three packages is stated in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} does not allow flexible models, and applies the bootstrap approach to obtain a sample for every iteration; \pkg{mi} utilizes a different criterion to check the convergency, as well as several new features for some special situations; \pkg{mice} stands in the middle of the other two: the models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
+Within the four packages, \pkg{norm} is very different from the other three. \citet{schafer1998multiple} introduced the basic idea of \pkg{norm}. It assumes the observations are sampled from a multivariate normal distribution, and uses EM algorithm to estimate the mean and variance-covariance matrix. Then it utilizes data augmentation method to converge the distribution. 
+
+All the other three packages are using the chained equation approach with similar steps and slightly different settings. A comparison between the three packages is stated in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} does not allow flexible models, and applies the bootstrap approach to obtain a sample for every iteration; \pkg{mi} stops the iteration when the result is converging, checking by a different criterion, as well as several new features for some special situations; \pkg{mice} stands in the middle of the other two: the models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
 
 \begin{center}
 \begin{table}[h]
 \begin{centering}
 \begin{tabular}{l|c|c|c}
 \hline 
-\textbf{\scriptsize{Algorithm}} & \textbf{\scriptsize{Hmisc}} & \textbf{\scriptsize{mice}} & \textbf{\scriptsize{mi}}\tabularnewline
+\textbf{\scriptsize{Algorithm Steps}} & \textbf{\scriptsize{Hmisc}} & \textbf{\scriptsize{mice}} & \textbf{\scriptsize{mi}}\tabularnewline
 \hline 
 \textbf{\scriptsize{1. fill in the missing}} & \multicolumn{3}{c}{{\scriptsize{at random}}}\tabularnewline
 \hline 
-\textbf{\scriptsize{2. specify the model}} & {\scriptsize{pmm / regression}} & \multicolumn{2}{c}{{\scriptsize{user-specific model for each incomplete variable}}}\tabularnewline
+\textbf{\scriptsize{2. specify the model}} & {\scriptsize{pmm/regression/normpmm}} & \multicolumn{2}{c}{{\scriptsize{selectable model or user-specific model}}}\tabularnewline
 \hline 
-\textbf{\scriptsize{~~~~(default model)}} & \multicolumn{2}{c|}{{\scriptsize{predictive matching mean}}} & {\scriptsize{Baysian generalized linear models}}\tabularnewline
+\textbf{\scriptsize{~~~~(default model)}} & \multicolumn{2}{c|}{{\scriptsize{predictive mean matching}}} & {\scriptsize{Baysian generalized linear models}}\tabularnewline
 \hline 
-\textbf{\scriptsize{3. decide the data}} & {\scriptsize{a bootstrap sample}} & \multicolumn{2}{c}{{\scriptsize{the entire dataset with the current imputed variable being non-missing}}}\tabularnewline
+\textbf{\scriptsize{3. decide the data}} & {\scriptsize{a bootstrap sample}} & \multicolumn{2}{c}{{\scriptsize{the entire dataset with the current imputed values}}}\tabularnewline
 \hline 
 \textbf{\scriptsize{4. iterate imputation}} & \multicolumn{3}{c}{{\scriptsize{in every cycle, variables with missings are imputed sequentially}}}\tabularnewline
 \hline 
-\textbf{\scriptsize{5. ``converge'' when}} & \multicolumn{2}{c|}{{\scriptsize{burning-in $k$ cycles}}} & {\scriptsize{difference of within and between variance is trivial}}\tabularnewline
+\textbf{\scriptsize{5. stop when}} & \multicolumn{2}{c|}{{\scriptsize{achieving the max \# of iterations}}} & {\scriptsize{difference of within and between variance is small}}\tabularnewline
 \hline 
 \end{tabular}
 \par\end{centering}
-\caption{Comparison among the multiple imputation packages using chained equation approach.}
+\caption{Comparison of the algorithm steps among three multiple imputation packages that use chained equation approach.}
 \label{tab:compare-mi}
 \end{table}
 \par\end{center}
 
-By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a graphical panel in Figure~\ref{fig:missingGUI} area 7. Switching among the panels could compare the results by chain and any apparent discrepancy could be easily observed. Figure~\ref{fig:chaintabs} shows the results of four imputing chains by \pkg{mice}. 
 
 \begin{center}
 \begin{figure}[h]
@@ -302,13 +304,14 @@ By default, $m=3$ chains are imputed and users can modify the number of chains. 
 \end{figure}
 \par\end{center}
 
+By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a graphical panel in Figure~\ref{fig:missingGUI} area 7. Switching among the panels could compare the results by chain and any apparent discrepancy could be easily observed. Figure~\ref{fig:chaintabs} shows the results of four imputing chains by \pkg{mice}. 
+
+
 \subsubsection{Conditional on the categorical variables}
 
 When the variables of interest are bimodal or multi-modal, using the center statistics like mean or median as the imputations, or the simulation from an overall estimate like \pkg{norm}, is inadequate because the center can not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to use the group means or medians instead of the overall mean or median.
 
 The implementation of this idea produces the widget named ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. The procedure is as computing based on a conditional model given the category. However, the condition is invalid when the imputation method is ``Below 10\%'', since the aim of ``Below 10\%'' is only displaying the missings away from the non-missings, but giving the condition will mix the points again. If the conditioning factor variable has missing values, then a ``factor = NA'' group will be separated to calculate the numeric summary or the imputed values. If the conditioning factor itself is one of the plotting variables, then a message box will emerge to ask the user to impute the factor before other variables, and the plots are created without the condition.
-
-The role of conditions in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a much better imputation (Figure~\ref{fig: condition} right).
 
 \begin{center}
 \begin{figure}[h]
@@ -321,6 +324,20 @@ The role of conditions in the imputation is revealed in Figure~\ref{fig: conditi
 \end{figure}
 \par\end{center}
 
+The role of conditions in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a much better imputation (Figure~\ref{fig: condition} right).
+
+
+\subsection{Plot types}\label{plottype}
+
+Five types of graphs are available in the missing data GUI: histogram (for continuous data)/ barchart (for categorical data), spinogram/spineplot, pairwise plots, parallel coordinates plot, and missingness maps. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputes on any variables that the user points to. In Figure~\ref{fig:graphtypes} the color means whether the value is originally missing in humidity, except for the missingness maps, where the yellow area indicates the missing values from any variable.
+
+The histograms and barcharts are shown one by one for all the variables selected. When the missing values and the complete values share one bar, the bar is cut to two parts, and the ratio of two heights is equal to the ratio of missing and non-missing values in that bar. Besides, the histogram is laid vertically while barchart is horizontal, which will clearly differ the continuous and discrete data.
+
+The spinograms (for continuous variable) and spineplots (for categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, are the scaled versions of histograms and barcharts, which provide a better visualization of the change of missing proportion upon the change of the observed values. In a spinogram/spineplot, each bar has the identical height, but is partitioned by two colors which represent the missing and non-missing values. The ratio of two heights is equal to the ratio of missings and non-missings too. Both histogram/barchart and spinogram/spineplot are generated via \pkg{ggplot2} \citep{ggplot2}.
+
+Pairwise plots put the variable names and scales on the diagonal. For the continuous variables, the pairwise scatterplots are in the lower triangle. The upper triangle has two scenarios: one is the contour plots when all the selected incomplete variables are employed to color on; the other scenario is the correlation coefficients for the observations and imputes, when the imputed values are constant (e.g., by method ``Below 10\%'', overall mean, or overall median), and at least one selected incomplete variable is missed to color by (in this case the contour function does not work). For the categorical variables, barcharts by the categories of the vertical variable are given on both triangles. Again, the bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited by the room of the graphics device in the main window, the pairwise plots cannot contain too many variables. The upper limit of the number of variables is set to be 5 and the lower limit is apparently 2. Function \code{ggpairs} from package \pkg{GGally} \citep{ggally} is in the use to draw the plots.
+
+Parallel coordinates plot is originated by \citet{inselberg1985plane} to visualize high-dimensional data. In missing data GUI, all the selected variables are paralleled in two orders. One is the original order in the data; the other sorts the coordinates from the best separator to the worst by F statistic from ANOVA. A perfect separator could distinguish the imputes of the colored-by variable(s) completely from the observation. Hence under the ``Below 10\%'' setting, the 
 
 \begin{center}
 \begin{figure}[h]
@@ -343,17 +360,7 @@ The first row from left to right are barchart, histogram, spineplot, and spinogr
 
 \clearpage
 
-\subsection{Plot types}\label{plottype}
-
-Five types of graphs are available in the missing data GUI: histogram (for continuous data)/ barchart (for categorical data), spinogram/spineplot, pairwise plots, parallel coordinates plot, and missingness maps. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputes on any variables that the user points to. In Figure~\ref{fig:graphtypes} the color means whether the value is originally missing in humidity, except for the missingness maps, where the yellow area indicates the missing values from any variable.
-
-The histograms and barcharts are shown one by one for all the variables selected. When the missing values and the complete values share one bar, the bar is cut to two parts, and the ratio of two heights is equal to the ratio of missing and non-missing values in that bar. Besides, the histogram is laid vertically while barchart is horizontal, which will clearly differ the continuous and discrete data.
-
-The spinograms (for continuous variable) and spineplots (for categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, are the scaled versions of histograms and barcharts, which provide a better visualization of the change of missing proportion upon the change of the observed values. In a spinogram/spineplot, each bar has the identical height, but is partitioned by two colors which represent the missing and non-missing values. The ratio of two heights is equal to the ratio of missings and non-missings too. Both histogram/barchart and spinogram/spineplot are generated via \pkg{ggplot2} \citep{ggplot2}.
-
-Pairwise plots put the variable names and scales on the diagonal. For the continuous variables, the pairwise scatterplots are in the lower triangle. The upper triangle has two scenarios: one is the contour plots when all the selected incomplete variables are employed to color on; the other scenario is the correlation coefficients for the observations and imputes, when the imputed values are constant (e.g., by method ``Below 10\%'', overall mean, or overall median), and at least one selected incomplete variable is missed to color by (in this case the contour function does not work). For the categorical variables, barcharts by the categories of the vertical variable are given on both triangles. Again, the bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited by the room of the graphics device in the main window, the pairwise plots cannot contain too many variables. The upper limit of the number of variables is set to be 5 and the lower limit is apparently 2. Function \code{ggpairs} from package \pkg{GGally} \citep{ggally} is in the use to draw the plots.
-
-Parallel coordinates plot is originated by \citet{inselberg1985plane} to visualize high-dimensional data. In missing data GUI, all the selected variables are paralleled in two orders. One is the original order in the data frame; the other sorts the coordinates from the best separator to the worst by F statistic from ANOVA. A perfect separator could distinguish the imputes of the colored-by variable(s) completely from the observation. Hence under the ``Below 10\%'' setting, the selected incomplete variables should have higher power on separation; and by ``overall mean'' or ``Random Value'', the selected incomplete variables would have lower power. On the other hand, the selected variables without missing values should be marked if they have a higher rank on their separation capacity, because the observations are likely to be incomplete in a special area of these variables. Potentially the parallel coordinates plot may help to check the MCAR and MAR assumptions. By imputing the missing data with the ``Random Value'', we assume missing completely at random (MCAR). Additionally, if any conditioning factor variables were selected, then we assumed missing at random (MAR) conditioning on the factor. Cautions will raise if anything unusual happens in the link between the imputed variable and the covariates, for example, the yellow lines lie differently from the blue lines. The plots are produced by function \code{ggparcoord} from \pkg{GGally}.
+selected incomplete variables should have higher power on separation; and by ``overall mean'' or ``Random Value'', the selected incomplete variables would have lower power. On the other hand, the selected variables without missing values should be marked if they have a higher rank on their separation capacity, because the observations are likely to be incomplete in a special area of these variables. The plots are produced by function \code{ggparcoord} from \pkg{GGally}.
 
 The missingness map works as a graphical version of the shadow matrix, which provides an overview of the area of missing values in all variables. Assume that changing the order of variables and observations does not reduce any information, then agglomerating the missing values into blocks could enhance the understanding of missing patterns, especially for large data. Hence two re-ordered missingness maps are given besides the original map. One arranges the variables and cases by the number of missings, from the largest to the smallest; the other applies hierarchical clustering to both rows and columns.
 
@@ -440,7 +447,7 @@ The exported data with its shadow matrix can be loaded back again to the GUI, wh
 \par\end{center}
 
 \item Search a variable by typing. The variable table, conditioning checkboxes, and color-by-variable selector allow text entry to find a variable. This feature is especially useful when there are plenty of variables in the data.
-\item Save the plots. Plots can be saved tp png files by ``Save plot'' button. The imputation method and plot type will be auto-completed in the file name. All of the figures in the Example section were saved this way.
+\item Save the plots. Plots can be saved tp png files by ``Save plot'' button. The imputation method and plot type will be auto-completed in the file name.
 \end{itemize}
 
 
@@ -485,6 +492,50 @@ Figure~\ref{fig:tao3} (left) shows the data conditional imputing with median val
 \end{figure*}
 
 For this data, the better ways to impute the data would take the strong association between the variables into account. This suggests that neighbor or multiple imputation might be the more desirable imputation methods. Figure~\ref{fig:tao3} (right) shows the results for MI:areg, the regression-based imputation, conditional on year. The imputed values match the distribution of complete cases reasonably well. There are a few slight concerns: some of the imputed values have lower air temperature values than any of the complete cases, the spread of the imputed values is a little greater than the complete cases. But overall, this is probably as good as it is going to get with imputing the missings for this data set. It would be reasonable to export the imputed data for further analysis at this point.
+
+\subsection{Check assumptions}
+
+For each of the three incomplete variables, whether the MCAR or MAR assumption holds, should be considered before using the multiple imputation methods. However, as discussed in the first chapter, those assumptions are hard to verify without any further assumptions.
+
+Compared to MAR, MCAR is a stronger condition and can be rejected when the missingness depends on any observed data (or missing data). Assume that the incomplete variable is not independent from other variables, then any special missing patterns on the other variables could be the evidences to reject MCAR.
+
+Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. Parallel coordinates plot, inversely, can give an overview on a relatively large quantity of variables. If the two colors have quite different distributions in some variables, then it can be treat as an evidence of not being MCAR.
+
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\begin{tabular}{cc}
+{\tiny{(a) sea.surface.temp}} & {\tiny{(b) air.temp}}\tabularnewline
+\includegraphics[width=.48\textwidth]{graph/fig12-1-sea-temp-2} &
+\includegraphics[width=.48\textwidth]{graph/fig12-2-air-temp-2}\tabularnewline
+{\tiny{(c) humidity}} & \tabularnewline
+\includegraphics[width=.48\textwidth]{graph/fig12-3-humidity-2} & \tabularnewline
+\end{tabular}
+\par\end{centering}
+\caption{Parallel coordinates plots colored by whether missing on sea.surface.temp(top left), air.temp(top right), or humidity(bottom left). The variables are sorted by the F statistic of ANOVA, i.e., if the difference between the missing data and the observed data is significant. Any missing values in the present variables are imputed by ``Below 10\%'' method. Obviously the missingness on air.temp and humidity depends on other variables, so the MCAR assumption on these two variables are violated.}
+\label{fig:pcpCheck}
+\end{figure}
+\par\end{center}
+
+Figure~\ref{fig:pcpCheck} gives the parallel coordinates plot for each of the three incomplete variables, colored by the missingness of the current incomplete variable. For example, the top left is based on sea.surface.temp. Then the other 7 variables are given in the plot, and the yellow lines are the cases that are missing only on sea.surface.temp. The missing values on air.temp or humidity are imputed by ``Below 10\%'' method. Only 3 out of 736 observations are missed on sea.surface.temp, so we can hardly claim any missing structure. But most of the missings on air.temp occurred in one year and one location, with higher sea.surface.temp, higher uwind, and lower humidity. Most of the missings on humidity happened in the same location as the missings on air.temp but another year, with lower sea.surface.temp and lower air.temp. Those are very strong evidences of violating MCAR.
+
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\begin{tabular}{cc}
+{\tiny{air.temp}} & {\tiny{humudity}}\tabularnewline
+\includegraphics[width=.32\textwidth]{graph/fig11-1-air-temp} & \includegraphics[width=.32\textwidth]{graph/fig11-3-humidity}\tabularnewline
+\includegraphics[width=.32\textwidth]{graph/fig11-2-air-temp} & \includegraphics[width=.32\textwidth]{graph/fig11-4-humidity}\tabularnewline
+\end{tabular}
+\par\end{centering}
+\caption{Scatterplots (top row) and contour plots (bottom row) of uwind and vwind, two complete variables, colored by whether missing on air.temp(left column) or humidity(right column). The missings of air.temp is averagely higher on uwind and has a larger variation, than the non-missings of air.temp. In reverse, the joint distribution of uwind and vwind on the missings of humidity is closer to that of the non-missings.}
+\label{fig:uvwind}
+\end{figure}
+\par\end{center}
+
+MAR states that the probability of missing depends on the observed values, but not on the missing values. Without other assumptions, we are not able to check it from the plots, since the real values of the missings are not available. Even when we see the obvious difference between missings and non-missings in Figure~\ref{fig:uvwind}, i.e., the missings of air.temp higher in uwind and more scattered in vwind, we can declare nothing on MAR, because given uwind and vwind (and other dependent variables), the missingness of air.temp may still be independent from its own missing values.
+
+Nevertheless, the plots could suggest the possible conditioning variables, not only categorical but also numeric ones. From Figure~\ref{fig:uvwind} we see that the missingness of air.temp is conditioned on uwind and vwind, but humidity is not. For those suggested categorical conditioning variables, we can check them in the ``condition on'' widget, to get a better imputation.
 
 
 \section{Discussion}
