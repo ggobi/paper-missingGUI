@@ -133,7 +133,7 @@ To investigate missingness in a data set, a start is to examine the numerical su
 
 \subsubsection{Missingness map}
 
-The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary of the missing patterns. Like the shadow matrix, the missingness map highlights the missing values. It was created in the \proglang{R} package \pkg{Amelia}, and then in \pkg{VIM} the ``matrix plot'' made a hybrid of the heatmap and missingness map by adding a color scale to the observed values. Assume that changing the order of variables and observations does not reduce any information, then agglomerating the missing values into blocks can enhance the understanding of missing patterns, especially for large data. Hence, two re-ordered missingness maps are given besides the original map. One arranges the variables and cases by the number of missings, from the largest to the smallest; the other applies hierarchical clustering to both rows and columns. The strength of missingness map is to reveal whether the missings occur at some variables simultaneously. If so, then a similar missing pattern may indicate some association between the variables. If the missings happen at some observations synchronously, then it suggests the dependence between those observations.
+The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary of the missing patterns. Like the shadow matrix, the missingness map highlights the missing values. It was created in the \proglang{R} package \pkg{Amelia} \citep{amelia}, and then in \pkg{VIM} \citep{VIM} the ``matrix plot'' made a hybrid of the heatmap and missingness map by adding a color scale to the observed values. Assume that changing the order of variables and observations does not reduce any information, then agglomerating the missing values into blocks can enhance the understanding of missing patterns, especially for large data. Hence, two re-ordered missingness maps are given besides the original map. One arranges the variables and cases by the number of missings, from the largest to the smallest; the other applies hierarchical clustering to both rows and columns. The strength of missingness map is to reveal whether the missings occur at some variables simultaneously. If so, then a similar missing pattern may indicate some association between the variables. If the missings happen at some observations synchronously, then it suggests the dependence between those observations.
 
 \begin{center}
 \begin{figure}[h]
@@ -142,7 +142,7 @@ The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary o
 \includegraphics[width=0.3\textwidth]{graph/fig5-3-missingmap-2}
 \includegraphics[width=0.345\textwidth]{graph/fig5-3-missingmap-3}
 \par\end{centering}
-\caption{Missingness maps with different orders of variables and cases. The left panel gives the original order; the middle one sorts the variables and cases by a decreasing number of missing values; the right one sorts them by hierarchical clustering of missingness. 245 observations from 34 variables are displayed in the missingness maps, and the dataset \code{brfss} is described in Section~\ref{Examples}. From the original missingness map we see some variables with high missing rate, and several vertical segments at the bottom. In the middle panel the yellow color is clustered, but still messy. Based on the sorted missingness map we can find the most missing variables and observations. From the clustered missingness map on the right, we find that the missingness on ALCDAY4 and AVEDRNK2 are highly correlated, so are PREGNANT and STOPSMK2.}
+\caption{Missingness maps with different orders of variables and cases. The left panel gives the original order; the middle one sorts the variables and cases by a decreasing number of missing values; the right one sorts them by hierarchical clustering of missingness. 245 observations from 34 variables are displayed in the missingness maps, and the dataset \code{brfss} is described in Section~\ref{Examples}. From the original missingness map we see some variables with high missing rate, and several vertical segments at the bottom. In the middle panel the yellow color is clustered, but still messy. Based on the sorted missingness map we can find the most missing variables and observations. From the clustered missingness map on the right, we find that the missingness on ALCDAY4 and AVEDRNK2 are highly associated. Users should step back and check the data collection procedure in this situation. In this example, the questions about ALCDAY4 and AVEDRNK2 were both skipped under the condition that the subject did not drink in the past 30 days. For those missing values, any imputation is not of interest. Instead, looking for the covariates of the condition is meaningful, so the plots colored by the missingness of ALCDAY4 and AVEDRNK2 will help.}
 \label{fig:missingmap}
 \end{figure}
 \par\end{center}
@@ -222,6 +222,7 @@ Because the above imputation methods operate separately on each variable, the de
 
 \subsubsection{Neighbor imputations}
 
+
 The ``Neighbor'' methods replace a missing value with the mean or a random value of its $k$ nearest complete neighbors (Figure~\ref{fig:neighbor-imputation}). Distance between two observations is calculated using Euclidean distance on the standardized variables that have no missings. Figure~\ref{fig:neighbor-diagram} explains the procedure. Ties are not considered, and only the first $k$ entries are used. 
 
 
@@ -239,6 +240,12 @@ The ``Neighbor'' methods replace a missing value with the mean or a random value
 \par\end{center}
 
 
+This method requires at least one case in the dataset to be complete, and no categorical variables can be used. (Ordinal variables are treated as integers.) If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. By default $k=5$, but the choice is changable.
+
+%The methods should work well when the set of complete observations is large, but when there are few fully observations, the imputation may be biased due to too much waste information. 
+
+The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weights on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
+
 \begin{center}
 \begin{figure}[h]
 \begin{centering}
@@ -248,16 +255,6 @@ The ``Neighbor'' methods replace a missing value with the mean or a random value
 \label{fig:neighbor-diagram}
 \end{figure}
 \par\end{center}
-
-
-This method requires at least one case in the dataset to be complete, and no categorical variables can be used. (Ordinal variables are treated as integers.) If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. By default $k=5$, but the choice is changable.
-
-%The methods should work well when the set of complete observations is large, but when there are few fully observations, the imputation may be biased due to too much waste information. 
-
-The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weights on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
-
-
-\subsubsection{Multiple imputations}
 
 
 \begin{center}
@@ -275,29 +272,14 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \end{figure}
 \par\end{center}
 
+\clearpage
+\subsubsection{Multiple imputations}
 
 Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution and serve a wide variety of analytical goals. Four \proglang{R} packages are utilized to implement multiple imputations in the missing data GUI. Figure~\ref{fig:multiple-imputation} demonstrates the results of four packages on the same data. 
 
 Among these packages, \pkg{norm} is quite different from the other three. \citet{schafer1998multiple} introduced the basic idea of \pkg{norm}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge the distribution. 
 
 All the other three packages are using a chained equation approach with similar steps but slightly different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} uses a set selection of models, and applies bootstrap to obtain a sample for every iteration. \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. \pkg{mice} stands in the middle of the other two: the models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
-
-By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a result shown in a separate graphical panel. Switching among the panels the user can compare the results and observe discrepances. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. There of the four produced results where a small dump of imputed values occurred.
-
-
-\begin{center}
-\begin{figure}[h]
-\begin{centering}
-\begin{tabular}{cccc}
-\includegraphics[width=0.3\textwidth]{graph/fig10-1-chain} &  &  & \includegraphics[width=0.3\textwidth]{graph/fig10-2-chain}\tabularnewline
-%& & & \tabularnewline
-\includegraphics[width=0.3\textwidth]{graph/fig10-3-chain} &  &  & \includegraphics[width=0.3\textwidth]{graph/fig10-4-chain}\tabularnewline
-\end{tabular}
-\par\end{centering}
-\caption{Results of four imputing chains by \pkg{mice}, starting with the default random seed. Users can switch the panels by clicking the tabs, or close a panel by hitting the `x' sign. Focusing on the imputed values at the left side of the plot, we can see that the first, third and fourth chains cluster values in a small range of y-axis, but the second chain spread them very evenly in the y-direction.}
-\label{fig:chaintabs}
-\end{figure}
-\par\end{center}
 
 
 \begin{center}
@@ -327,6 +309,24 @@ By default, $m=3$ chains are imputed and users can modify the number of chains. 
 \par\end{center}
 
 
+By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a result shown in a separate graphical panel. Switching among the panels the user can compare the results and observe discrepances. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. There of the four produced results where a small dump of imputed values occurred.
+
+
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\begin{tabular}{cccc}
+\includegraphics[width=0.3\textwidth]{graph/fig10-1-chain} &  &  & \includegraphics[width=0.3\textwidth]{graph/fig10-2-chain}\tabularnewline
+%& & & \tabularnewline
+\includegraphics[width=0.3\textwidth]{graph/fig10-3-chain} &  &  & \includegraphics[width=0.3\textwidth]{graph/fig10-4-chain}\tabularnewline
+\end{tabular}
+\par\end{centering}
+\caption{Results of four imputing chains by \pkg{mice}, starting with the default random seed. Users can switch the panels by clicking the tabs, or close a panel by hitting the `x' sign. Focusing on the imputed values at the left side of the plot, we can see that the first, third and fourth chains cluster values in a small range of y-axis, but the second chain spread them very evenly in the y-direction.}
+\label{fig:chaintabs}
+\end{figure}
+\par\end{center}
+
+
 \subsubsection{Conditional on the categorical variables}
 
 When the variables of interest are bimodal or multi-modal, using the center statistics like the mean or median for imputation, or the simulating from an overall estimate like \pkg{norm} does, is inadequate because the center does not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to use the group means or medians instead of the overall mean or median.
@@ -334,6 +334,11 @@ When the variables of interest are bimodal or multi-modal, using the center stat
 This is available using the controls ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. However, the condition is invalid when the imputation method is ``Below 10\%'', since the aim of ``Below 10\%'' is only displaying the missings away from the non-missings. If the conditioning factor variable has missing values, then a ``factor = NA'' group will be generated to calculate the numeric summary or the imputed values. If the conditioning factor itself is one of the plotting variables, then a message box will emerge to ask the user to impute the factor before other variables, and the plots are created without the condition.
 
 The role of conditioning in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a better result (Figure~\ref{fig: condition} right).
+
+
+\subsection{Plot types}\label{plottype}
+
+There are four types of graphs available in the missing data GUI: histogram (for continuous data)/ barchart (for categorical data), spinogram/spineplot, pairwise plots, and parallel coordinates plot. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputed values on any chosen variables. In Figure~\ref{fig:graphtypes} the yellow color means that the value is originally missing in humidity.
 
 
 \begin{center}
@@ -346,11 +351,6 @@ The role of conditioning in the imputation is revealed in Figure~\ref{fig: condi
 \label{fig: condition}
 \end{figure}
 \par\end{center}
-
-
-\subsection{Plot types}\label{plottype}
-
-There are four types of graphs available in the missing data GUI: histogram (for continuous data)/ barchart (for categorical data), spinogram/spineplot, pairwise plots, and parallel coordinates plot. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputed values on any chosen variables. In Figure~\ref{fig:graphtypes} the yellow color means that the value is originally missing in humidity.
 
 
 \begin{center}
