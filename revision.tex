@@ -1,0 +1,214 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3.4cm,lmargin=3cm,rmargin=3.4cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{babel}
+\begin{document}
+\begin{center}
+\textbf{\textit{\LARGE{Revision of }}}\textbf{\LARGE{MissingDataGUI\bigskip{}
+}}
+\par\end{center}{\LARGE \par}
+
+The substantial changes were made on both the package and the manuscript.
+The main changes of the package include:
+
+\begin{itemize}
+\item embedding two more packages (mice and mi) for multiple imputation;
+\item adding a new imputation method based on the nearest neighbors;
+\item enabling multiple tabs in the graphics widget, to compare different
+imputation methods and multiple imputation chains;
+\item adding a setting tab in the GUI to adjust the parameters and the imputation
+methods of mice;
+\item allowing the input variables to be the ordered factors.
+\end{itemize}
+The main changes in the article include:
+\begin{itemize}
+\item introduction and comparison among the current multiple imputation
+packages in R;
+\item example of how to check the missing assumptions;
+\item more background of the plot types;
+\item explicit explanation on the imputation methods of the nearest neighbors;
+\item comparison among the multiple imputation chains.
+\end{itemize}
+
+\section*{Answers to Review 1}
+\begin{enumerate}
+
+\item What action should the user take in response to the generated plots?
+(Para. 1 \& 6)
+\begin{itemize}
+\item In our revision, the examples are explained more explicitly with some
+conclusion and suggestion. For instance, in the example of missingness
+map, we suggest users to use parallel coordinates plot to reveal the
+dependent variables on the missing of two highly associated variables
+before the imputation. Also, we introduce how to use the GUI to check
+the missing assumptions.
+\end{itemize}
+
+\item There are problems in reproducing Figure 5. (Para. 2)
+\begin{itemize}
+\item We do not have any problem in reproducing Figure 5. MissingDataGUI
+has released a new version, so hopefully the problem could be fixed.
+\end{itemize}
+
+\item Ordinal variables are omitted. (Para. 4)
+\begin{itemize}
+\item Ordinal variables are accepted now. Median could be obtained as the
+center after sorted. Methods provided by the package mice can be used
+for the ordinal variables too.
+\end{itemize}
+
+\item It is not clear what happens when the user conditions on a factor
+that itself has missingness. (Para. 5)
+\begin{itemize}
+\item It is treated as a separate group if the conditioning variable is
+not selected to be imputed.
+\end{itemize}
+
+\item Missingness map: what should the user do with the positive or negative
+association? (Para. 7)
+\begin{itemize}
+\item We use a new example to illustrate the missingness map, which shows
+a positive association. The reason of the association in the example
+is explained and the corresponding suggestion is provided. However,
+one example cannot cover all the situations, so the reason and suggestion
+are not general. Users should consider the actual circumstance before
+any action.
+\end{itemize}
+
+\item In section 3.2, the authors choose an imputation algorithm to maximize
+the similarity, however, it is neither necessary nor sufficient to
+indicate whether the imputations are reasonable (Para. 8)
+\begin{itemize}
+\item The review is correct that it is neither necessary nor sufficient
+to use the similarity to indicate whether the imputations are reasonable.
+\end{itemize}
+
+\item The package supports so many imputation algorithms that are known
+to have poor theoretical properties. Why are the others supported,
+which invariably means that some users will utilize them? (Para. 9)
+\begin{itemize}
+\item The simple imputation methods like overall mean and median, are practical,
+though not ideal.
+\item A couple of imputation methods were added to the package, including
+two multiple imputation packages: mice and mi.
+\end{itemize}
+
+\item The parallel coordinates plot could be used to visualize whether the
+completed data set is consistent with the missing-at-random (MAR)
+assumption. (Para. 10)
+\begin{itemize}
+\item An example was added to Section 3 on how to use the parallel coordinates
+plot and other plots to check the missing assumptions. MCAR (missing
+completely at random) can be checked, but MAR is not testable. However,
+it is possible to suggest the dependent variables via the plots.
+\end{itemize}
+
+\end{enumerate}
+
+\section*{Answers to Review 2}
+\begin{enumerate}
+
+\item It does not even clearly warn against using univariate imputation
+approaches for multivariate analysis purposes. (Para. 2)
+\begin{itemize}
+\item This issue cannot be answered easily by adding a warning under that
+situation. This package is designed for the novice users to explore
+and understand the missing structure by trying various imputation
+methods. We know that the univariate imputation methods do not help
+much to get an accurate estimate, so we provide other multivariate
+methods. We never recommend the univariate ones over others. Since
+the users could load any types of data into the GUI, we have no idea
+if the multivariate analysis is appropriate, or if the variables are
+independent in a multivariate analysis. For any real data, users usually
+start from an exploration, before knowing which impuation method to
+use. The univariate methods are handy and practical at the beginning
+of an analysis. A warning saying that the univariate imputation is
+risky may not be correct all the time, and we do not want to prevent
+the users from trying different methods than what they ``should''
+use.
+\end{itemize}
+
+\item How the variables used in regression imputation are chosen? (Para.
+2)
+\begin{itemize}
+\item The variables can be selected in area 1 of Figure 1. All of the selected
+variables are thrown into the model. The regression method is a multiple
+imputation method provided by the package Hmisc, and renamed to ``MI:
+areg'' in the new version.
+\end{itemize}
+
+\item How several imputations from multiple imputation are used in plotting?
+(Para. 2)
+\begin{itemize}
+\item In the revision we allow the users to pick the number of imputation
+sets in any multiple imputation. Different sets are plotted in different
+tabs.
+\end{itemize}
+
+\item For the less well-known types of plot, e.g. the spine plot, a brief
+description should be given. (Para. 2)
+\begin{itemize}
+\item Descriptions and references are given for most of the plot types in
+the revision.
+\end{itemize}
+
+\item Some other related packages are completely ignored (Para. 3)
+\begin{itemize}
+\item Now they are briefly introduced in Section 1, and the comparison of
+the multiple imputation packages is given in Section 2.3.
+\end{itemize}
+
+\item Installation issues (Para. 4, Bullet 1)
+\begin{itemize}
+\item The installation of Gtk+ on Windows is not fun since Windows users
+may need to edit the environment variable PATH manually. Once you
+get this step done, it should be easy to install RGtk2 and gWidgetsRGtk2
+in R.
+\end{itemize}
+
+\item Pairwise plot does not work on Windows R 3.0.1. (Para. 4, Bullet 2)
+\begin{itemize}
+\item In a recent test we don't see this problem. Could you please update
+to the latest versions of R and the packages, and try again? If it
+still doesn't work, please send me the error message and the system
+information.
+\end{itemize}
+
+\item Warning message ``ggpcp is deprecated''. (Para. 4, Bullet 3)
+\begin{itemize}
+\item Fixed in version 0.2-0 of the package.
+\end{itemize}
+
+\item When creating a numerical summary of missingness for the complete
+dataset, why do I have to select all variables? (Para. 5, Bullet 1)
+\begin{itemize}
+\item Now if no variables are selected, then the numerical summary will
+include all the variables. Shift + left-click will make it easy to
+select all.
+\end{itemize}
+
+\item Why doesn\textquoteright{}t conditioning affect the numerical summary?
+(Para. 5, Bullet 2)
+\begin{itemize}
+\item Fixed in version 0.2-0.
+\end{itemize}
+
+\item In the parallel coordinate plot, switch plotting order so that the
+missings are displayed on top of the non-missings. (Para. 5, Bullet
+3)
+\begin{itemize}
+\item Fixed in version 0.2-0.
+\end{itemize}
+
+\item As many people are red-green blind, choosable colors or at least a
+better choice of predefined colours would be helpful. (Para. 5, Bullet
+4)
+\begin{itemize}
+\item We change the color scheme to make it colorblind friendly.\end{itemize}
+\end{enumerate}
+
+\end{document}
