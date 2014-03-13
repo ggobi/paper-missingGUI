@@ -17,14 +17,14 @@
 \author{Xiaoyue Cheng\\Iowa State University \And 
         Dianne Cook\\Iowa State University \And
         Heike Hofmann\\Iowa State University}
-\title{\pkg{MissingDataGUI}: A Graphical User Interface for Exploring 
-	Missing Values in Data}
+\title{Visually Exploring Missing Values in Multivariable Data 
+       Using a Graphical User Interface}
 
 %% for pretty printing and a nice hypersummary also set:
 \Plainauthor{Xiaoyue Cheng, Dianne Cook, Heike Hofmann} %% comma-separated
-\Plaintitle{MissingDataGUI: A Graphical User Interface for Exploring 
-	    Missing Values in Data} %% without formatting
-\Shorttitle{\pkg{MissingDataGUI}: Exploring Missing Values in Data} %% a short title (if necessary)
+\Plaintitle{Visually Exploring Missing Values in Multivariable Data 
+	    Using a Graphical User Interface} %% without formatting
+\Shorttitle{Visually Exploring Missing Values} %% a short title (if necessary)
 
 %% an abstract and keywords
 \Abstract{
@@ -133,7 +133,9 @@ To investigate missingness in a data set, a start is to examine the numerical su
 
 \subsubsection{Missingness map}
 
-The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary of the missing patterns. Like the shadow matrix, the missingness map highlights the missing values. It was created in the \proglang{R} package \pkg{Amelia} \citep{amelia}, and then in \pkg{VIM} \citep{VIM} the ``matrix plot'' made a hybrid of the heatmap and missingness map by adding a color scale to the observed values. Assume that changing the order of variables and observations does not reduce any information, then agglomerating the missing values into blocks can enhance the understanding of missing patterns, especially for large data. Hence, two re-ordered missingness maps are given besides the original map. One arranges the variables and cases by the number of missings, from the largest to the smallest; the other applies hierarchical clustering to both rows and columns. The strength of missingness map is to reveal whether the missings occur at some variables simultaneously. If so, then a similar missing pattern may indicate some association between the variables. If the missings happen at some observations synchronously, then it suggests the dependence between those observations.
+The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary of the missing patterns. Like the shadow matrix used in \proglang{GGobi}, the missingness map shows the position of missing values relative to variables and cases. The \proglang{R} package \pkg{Amelia} \citep{amelia}, and \pkg{VIM} \citep{VIM} have versions of missingness maps. Agglomerating the missing values into blocks by re-ordering variables and case ids, can enhance the understanding of missing patterns, especially for large data. Two re-ordered missingness maps are shown in Figure~\ref{fig:missingmap}. One arranges the variables and cases by the number of missings, from the largest to the smallest; the other applies hierarchical clustering to both rows and columns. The strength of missingness map is to reveal whether the missings occur at some variables simultaneously. If so, then a similar missing pattern may indicate some association between the variables. If the missings happen at some observations synchronously, then it suggests the dependence between those observations.
+
+Figure~\ref{fig:missingmap} displays 245 observations and 34 variables for the dataset \code{brfss} (described in Section~\ref{Examples}). From the missingness maps we can see that most of the missings occurred in seven variables. The missingness of some variables are associated, and users should check the data collection procedure for these variables. In this example, the questions about the drinking time and amount (ALCDAY4 and AVEDRNK2, the top two variables in the right panel) were both skipped under the condition that the subject did not drink in the past 30 days. For those variables, the imputed values are of no interest. Instead, looking for the covariates of the condition is meaningful, so the plots colored by the missingness of ALCDAY4 and AVEDRNK2 will help.
 
 \begin{center}
 \begin{figure}[h]
@@ -142,7 +144,7 @@ The missingness map (Figure~\ref{fig:missingmap}) provides a graphical summary o
 \includegraphics[width=0.3\textwidth]{graph/fig5-3-missingmap-2}
 \includegraphics[width=0.345\textwidth]{graph/fig5-3-missingmap-3}
 \par\end{centering}
-\caption{Missingness maps with different orders of variables and cases. The left panel gives the original order; the middle one sorts the variables and cases by a decreasing number of missing values; the right one sorts them by hierarchical clustering of missingness. 245 observations from 34 variables are displayed in the missingness maps, and the dataset \code{brfss} is described in Section~\ref{Examples}. From the original missingness map we see some variables with high missing rate, and several vertical segments at the bottom. In the middle panel the yellow color is clustered, but still messy. Based on the sorted missingness map we can find the most missing variables and observations. From the clustered missingness map on the right, we find that the missingness on ALCDAY4 and AVEDRNK2 are highly associated. Users should step back and check the data collection procedure in this situation. In this example, the questions about ALCDAY4 and AVEDRNK2 were both skipped under the condition that the subject did not drink in the past 30 days. For those missing values, any imputation is not of interest. Instead, looking for the covariates of the condition is meaningful, so the plots colored by the missingness of ALCDAY4 and AVEDRNK2 will help.}
+\caption{Missingness maps with different orders of variables and cases. The left panel gives the original order; the middle one sorts the variables and cases by a decreasing number of missing values; the right one sorts them by a hierarchical clustering of missingness. From the original missingness map we see some variables with high missing rate, and several vertical segments at the bottom. In the middle panel the yellow color is clustered, although still messy, we can see some relationship between missing variables and observations. From the clustered missingness map on the right, we find that the missingness on the top two variables are strongly associated.}
 \label{fig:missingmap}
 \end{figure}
 \par\end{center}
@@ -376,7 +378,7 @@ The spinogram (for continuous variable) and spineplot (for categorical variable)
 
 A scatterplot matrix is used to display pairs of variables. Variable names and scales are placed on the diagonal. For the continuous variables, the pairwise scatterplots are shown in the lower triangle. The upper triangle has two possibilities: contour plots when all the selected incomplete variables are employed to color on, or the correlation coefficients when at least one selected incomplete variable is not used to color on. For the categorical variables, barcharts by the categories of the vertical variable are given on both triangles. Again, the bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited space available to the graphics device limits the number of variables that can be shown. The upper limit of the number of variables is set to be 5 and the lower limit is 2.
 
-The parallel coordinates plot by \citet{inselberg1985plane} and \citet{wegman1990hyperdimensional} visualizes high-dimensional data. Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. Parallel coordinates plot, inversely, can give an overview on a relatively large quantity of variables. In the missing data GUI, the order of the variables can be chosen in one of two ways: the original order in the data, or by sorting the variables from the best separator to the worst by F statistic from ANOVA. In Figure~\ref{fig:graphtypes}, the best separating variable for the missingness of humidity is humidity itself, because the ``below 10\%'' method makes a big gap between the missing and non-missing values. ``Below 10\%'' is not an ideal method for the ordered parallel coordinates plot. However, the plot reveals that the missingness of humidity occurred in one year and one location, when sea.surface.temp and air.temp were low.
+The parallel coordinates plot by \citet{inselberg1985plane} and \citet{wegman1990hyperdimensional} visualizes high-dimensional data. Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. Parallel coordinates plot, conversely, can give an overview on a relatively large quantity of variables. In the missing data GUI, the order of the variables can be chosen in one of two ways: the original order in the data, or by sorting the variables from the best separator to the worst by F statistic from ANOVA. In Figure~\ref{fig:graphtypes}, the best separating variable for the missingness of humidity is humidity itself, because the ``below 10\%'' method makes a big gap between the missing and non-missing values. ``Below 10\%'' is not an ideal method for the ordered parallel coordinates plot. However, the plot is still useful: it reveals that the missingness of humidity occurred in one year and one location, when sea.surface.temp and air.temp were low.
 
 
 \subsection{Design issues}
