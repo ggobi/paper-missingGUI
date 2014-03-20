@@ -1,7 +1,10 @@
+```{r}
+library("MissingDataGUI")
+```
+
 ** Figure 1
 
 ```{r}
-library("MissingDataGUI")
 MissingDataGUI(tao)
 ```
 select the 4th-6th rows in region 1.
@@ -244,5 +247,5 @@ uncheck all the checkboxes in region 2.
 choose "Neighbor" in region 4.
 choose "Pairwise Plots" in region 5.
 click "Plot" in region 6.
-The plots are at the (2,3) and (3,2) position of the plot matrix.
+The plots are at the (2,3) and (3,2) position of the plot matrix. The contour plots are transposed.
 
