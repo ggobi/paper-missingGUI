@@ -311,7 +311,7 @@ All the other three packages are using a chained equation approach with similar 
 \par\end{center}
 
 
-By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a result shown in a separate graphical panel. Switching among the panels the user can compare the results and observe discrepances. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. There of the four produced results where a small dump of imputed values occurred.
+By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a result shown in a separate graphical panel. Switching among the panels the user can compare the results and observe discrepances. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small dump of imputed values occurred.
 
 
 \begin{center}
@@ -507,7 +507,7 @@ For this data, the better ways to impute the data would take the strong associat
 
 There are three types of missing data mechanisms: MCAR(missing completely at random), MAR(missing at random), and MNAR(missing not at random). Many imputation methods, including multiple imputation, assume MCAR or MAR. However, MCAR is the most difficult assumption to fulfill, since it asks that the missingness not to depend on either the observed or missing data. MAR is a little looser, but still expects the missingness to be independent from the missing values. To check the assumptions, we follow a process of elimination. We believe the missing pattern is MCAR unless we see evidence against. If MCAR is violated, then we believe the pattern is MAR, unless there is evidence against.
 
-As an example, let us check whether the two incomplete variables (air.temp and humidity) in the data \code{tao} follows MCAR or MAR. Figure~\ref{fig:pcpCheck} gives two parallel coordinates plots, colored by the missingness of each incomplete variable. For example, the left panel is colored on the missingness of air.temp. Then the other 7 variables are given in the plot, and the yellow lines are the cases that are missing only on air.temp. The missing values on sea.surface.temp or humidity are represented by ``Below 10\%'' method. Most of the missings on air.temp occurred in one year and one location, with higher sea.surface.temp, higher uwind, and lower humidity. Most of the missings on humidity happened in the same location as the missings on air.temp but in another year, with lower sea.surface.temp and lower air.temp. These are strong evidences against MCAR.
+As an example, let us check whether the two incomplete variables (air.temp and humidity) in the data \code{tao} follows MCAR or MAR. Figure~\ref{fig:pcpCheck} gives two parallel coordinates plots, colored by the missingness of each incomplete variable. For example, the left panel is colored on the missingness of air.temp. Then the other 7 variables are given in the plot, and the yellow lines are the cases that are missing only on air.temp. The missing values on sea.surface.temp or humidity are represented by ``Below 10\%'' method. Most of the missings on air.temp occurred in one year and one location, with higher sea.surface.temp, higher uwind, and lower humidity. Most of the missings on humidity happened in the same location as the missings on air.temp but in another year, with lower sea.surface.temp and lower air.temp. This is strong evidence against MCAR.
 
 \begin{center}
 \begin{figure}[h]
