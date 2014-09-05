@@ -151,11 +151,11 @@ Figure~\ref{fig:missingmap} displays 245 observations and 34 variables for the d
 
 \subsection{Imputation}\label{imputation}
 
-A number of imputation methods are available in the package. The purpose of these is not only to examine the dependence between missings or non-missings, but also to produce a complete data set for later analysis. A few criteria were considered to improve the user experience: (1) easy to understand and implement; (2) computing complexity is medium or low; (3) adaptability to different situations, i.e., no strong model assumptions. Not all of the imputation methods are available in the package, because (1) there are too many methods and variations, it is not practical to include all; and (2) users may use their own method and import the result to missing data GUI for exploration.
+A number of imputation methods are available in the package. The purpose is two-fold: to enable exploring dependence between missings or non-missings, and also to produce a complete data set for later analysis. A few criteria were considered in the choices of methods to make available and the design: (1) easy to understand and implement; (2) computing complexity is medium or low; (3) adaptability to different situations, i.e., no strong model assumptions. Not all of the imputation methods available in \proglang{R} are available in the package because (1) there are too many methods and variations, so it is not practical to include all, and (2) users may use their own method and import the result to missing data GUI for exploration.
 
 The seven imputation methods provided are: 
 ``Below 10\%'', ``Simple'', ``Neighbor'', ``MI:areg'', ``MI:norm'', ``MI:mice'', ``MI:mi''. 
-``Simple'' and ``Neighbor'' contain more than one method. As shown in Figure~\ref{fig:missingGUI}, region 7, the three tab labels interface to the three methods provided by ``Simple'': overall median, mean/mode, and random value. ``Neighbor'' contains two methods: mean of the nearest neighbors, and random nearest neighbor. The neighbor methods also allow the user to change the number of neighbors. Table~\ref{tab:compare-methods} compares the imputation methods available in the GUI.
+``Simple'' and ``Neighbor'' contain more than one method. Some methods (e.g. ``Below 10\%'') are only suitable for exploring the missingness patterns, and are not suitable to use for producing a complete data set for analysis. Three tab labels interface to the three methods provided by ``Simple'', overall median, mean, and random value (Figure~\ref{fig:missingGUI}, region 7). ``Neighbor'' interfaces to two methods,: mean of the nearest neighbors, and random nearest neighbor. The neighbor methods also allows the user to change the number of neighbors. Table~\ref{tab:compare-methods} summarizes and compares the imputation methods available in the GUI.
 
 \begin{center}
 \begin{table}[h]
@@ -186,7 +186,7 @@ The seven imputation methods provided are:
 \caption{Imputation methods included in the missing data GUI. Strictly speaking, 
 ``Below 10\%'' is not an imputation method, but a way to put the missing 
 values in the same graph with the observations. ``Deterministic''
-means whether the result is deterministic or random. ``Univariate''
+indicates whether the method has a stochastic component or not. ``Univariate''
 means whether the imputation only uses the individual variable where
 imputation is needed, or makes use of other variables as well. ``Multiple
 imp.'' indicates whether the methods is a type of multiple imputation that 
