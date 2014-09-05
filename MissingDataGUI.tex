@@ -224,8 +224,7 @@ These imputation methods operate separately on each variable.  Dependencies betw
 \subsubsection{Neighbor imputations}
 
 
-The ``Neighbor'' methods replace a missing value with the mean or a random value of its $k$ nearest complete neighbors (Figure~\ref{fig:neighbor-imputation}). Distance between two observations is calculated using Euclidean distance on the standardized variables that have no missings. Figure~\ref{fig:neighbor-diagram} explains the procedure. Ties are not considered, and only the first $k$ entries are used. 
-
+The ``Neighbor'' methods replace a missing value with the mean of, or a random selection from, its $k$ nearest complete neighbors (Figure~\ref{fig:neighbor-imputation}). The distance between two observations is calculated using Euclidean distance on the standardized variables that have no missings. Figure~\ref{fig:neighbor-diagram} illustrates the procedure. Ties are not considered, and only the first $k$ entries are used. This method requires at least one case in the dataset to be complete, and no categorical variables can be used. (Ordinal variables are treated as integers.) If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. By default $k=5$, but this is the user's choice.
 
 \begin{center}
 \begin{figure}[h]
@@ -235,24 +234,22 @@ The ``Neighbor'' methods replace a missing value with the mean or a random value
 \includegraphics[width=0.32\textwidth]{graph/fig3-5-knn} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-5-knn-2}\tabularnewline
 \end{tabular}
 \par\end{centering}
-\caption{Scatterplots for two neighbor imputation methods: (a) mean of the 5 nearest neighbors, (b) a random value from the 5 nearest neighbors.}
+\caption{Scatterplots for nearest neighbor imputation methods: (a) mean of the 5 nearest neighbors, (b) a random value from the 5 nearest neighbors.}
 \label{fig:neighbor-imputation}
 \end{figure}
 \par\end{center}
 
 
-This method requires at least one case in the dataset to be complete, and no categorical variables can be used. (Ordinal variables are treated as integers.) If there are less than $k$ complete cases, then all of them are used to generate the mean or a random value. If none of the cases are complete, then the mean or a random value of the entire data will be returned. By default $k=5$, but the choice is changable.
-
 %The methods should work well when the set of complete observations is large, but when there are few fully observations, the imputation may be biased due to too much waste information. 
 
-The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weights on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
+The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of hot deck imputation \citep{andridge2010review}. The neighbor mean method averages the weights on all chosen neighbors, and the random neighbor method places all the weight on one arbitrary neighbor. When $k=1$, the methods are deterministic hot deck.
 
 \begin{center}
 \begin{figure}[h]
 \begin{centering}
 \includegraphics[width=1\textwidth]{graph/fig9-diagram}
 \par\end{centering}
-\caption{Illustration of the way to get $k$ nearest neighbors. The shaded entries are the complete observations to rank. The red frames circle the variables to compute the distance. After getting the rank of all complete observations, the first $k$ are used as neighbors. }
+\caption{Illustration of the $k$ nearest neighbors imputation method. The shaded entries are the complete observations to rank. The red frames variables used to compute the distance. After getting the rank of all complete observations, the first $k$ are used as neighbors. }
 \label{fig:neighbor-diagram}
 \end{figure}
 \par\end{center}
