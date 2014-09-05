@@ -219,7 +219,7 @@ The ``random value'' method (Figure~\ref{fig:univariate-imputation} (d)) randoml
 \end{figure}
 \par\end{center}
 
-These imputation methods operate separately on each variable.  Dependencies between variables are ignored, yielding covariance and correlation estimates that are potentially very different from those of the complete cases. This could be a big problem for some analyses. These methods are not ideal from a statistical perspective.  In some situations where the inadequate estimation of covariance does not affect results and conclusions they can provide a simple, few assumptions required, solution, but in most situations they are not advised. For the application here, we are primarily concerned about providing methods for analysts to explore the missing value structure, and the plots reveal quite clearly why these univariate imputation methods are inadequate. Figure \ref{fig:univariate-imputation} shows the ``cross structure" (orange) induced on the pattern of points by mean and median imputation, and makes it quite clear that the covariance estimates for the imputed data would not well match that of the complete cases. 
+These imputation methods operate separately on each variable.  Dependencies between variables are ignored, yielding covariance and correlation estimates that are potentially very different from those of the complete cases. This could be a big problem for some analyses. These methods are not ideal from a statistical perspective.  In some situations where the inadequate estimation of covariance does not affect results and conclusions they can provide a simple, few assumptions required, solution, but in most situations they are not advised. For the application here, we are primarily concerned about providing methods for analysts to explore the missing value structure, and the plots reveal quite clearly why these univariate imputation methods are inadequate. Figure \ref{fig:univariate-imputation} shows the ``cross structure'' (orange) induced on the pattern of points by mean and median imputation, and makes it quite clear that the covariance estimates for the imputed data would not well match that of the complete cases. 
 
 \subsubsection{Neighbor imputations}
 
@@ -273,7 +273,7 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \end{figure}
 \par\end{center}
 
-\clearpage
+%\clearpage
 \subsubsection{Multiple imputations}
 
 Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution and serve a wide variety of analytical goals. Four \proglang{R} packages are utilized to implement multiple imputations in the missing data GUI. Figure~\ref{fig:multiple-imputation} demonstrates the results of four packages on the same data. 
