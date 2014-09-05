@@ -265,7 +265,7 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \includegraphics[width=0.32\textwidth]{graph/fig3-8-mice-2} &  &  & \includegraphics[width=0.32\textwidth]{graph/fig3-9-mi-2}\tabularnewline
 \end{tabular}
 \par\end{centering}
-\caption{Scatterplots for the multiple imputations from four \proglang{R} packages: (a) predictive mean matching by \pkg{Hmisc}; (b) multivariate normal model by \pkg{norm}; (c) multivariate imputation by chained equations by \pkg{mice}; (d) multiple iterative regression imputation by \pkg{mi}. All the four imputations are conditioned on year.}
+\caption{Scatterplots for the multiple imputations from four \proglang{R} packages: (a) predictive mean matching by \pkg{Hmisc}; (b) multivariate normal model by \pkg{norm}; (c) multivariate imputation using chained equations by \pkg{mice}; (d) multiple iterative regression imputation by \pkg{mi}. All the four imputations are conditioned on year.}
 \label{fig:multiple-imputation}
 \end{figure}
 \par\end{center}
@@ -279,7 +279,7 @@ Among the four packages, \pkg{norm} is quite different from the other three. The
 
 The other packages use a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. The package \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. In between these two is \pkg{mice}: The models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
 
-By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred.
+By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred (Figure \ref{fig:chaintabs}).
 
 \begin{center}
 \begin{table}[h]
@@ -302,7 +302,7 @@ By default, $m=3$ chains are imputed and users can choose the number of chains. 
 \hline 
 \end{tabular}
 \par\end{centering}
-\caption{Comparison of the algorithm steps among three multiple imputation packages that use chained equation approach.}
+\caption{Comparison of the algorithm steps among three multiple imputation packages that use the chained equation approach.}
 \label{tab:compare-mi}
 \end{table}
 \par\end{center}
@@ -325,11 +325,11 @@ By default, $m=3$ chains are imputed and users can choose the number of chains. 
 
 \subsubsection{Conditional on the categorical variables}
 
-When the variables of interest are bimodal or multi-modal, using the center statistics like the mean or median for imputation, or the simulating from an overall estimate like \pkg{norm} does, is inadequate because the center does not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to use the group means or medians instead of the overall mean or median.
+When the variables of interest have bimodal or multi-modal distributions, using the center statistics like the mean or median for imputation, or the simulating from an overall estimate like \pkg{norm} does, is inadequate because the center does not reflect the shape of distribution properly. In many situations, the modalities arise from the mixture of groups. Hence, a better imputation method is to condition by group, and then calculate the statistics.
 
-This is available using the controls ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. However, the condition is invalid when the imputation method is ``Below 10\%'', since the aim of ``Below 10\%'' is only displaying the missings away from the non-missings. If the conditioning factor variable has missing values, then a ``factor = NA'' group will be generated to calculate the numeric summary or the imputed values. If the conditioning factor itself is one of the plotting variables, then a message box will emerge to ask the user to impute the factor before other variables, and the plots are created without the condition.
+This is available using the controls ``categorical variables to condition on''. All categorical variables are listed with checkboxes. The variables checked will partition the data into blocks and then the imputation method is implemented in each block of the data. However, the condition is not used when the method is ``Below 10\%'', since the aim of ``Below 10\%'' is simply to display the missings away from the non-missings. If the conditioning factor variable has missing values, then a ``factor = NA'' group will be generated to calculate the numeric summary or the imputed values. If the conditioning factor itself is one of the plotting variables, then a message box will emerge to ask the user to impute the missing values on the factor before other variables, and the plots are created without the condition.
 
-The role of conditioning in the imputation is revealed in Figure~\ref{fig: condition}. Without the condition, the imputations may locate far away from the distribution of values (Figure~\ref{fig: condition} left). But calculating separately by group provides a better result (Figure~\ref{fig: condition} right).
+The importance of conditioning in the imputation is illustrated in Figure~\ref{fig: condition}. Without the condition, the imputated do not match the distribution of complete values (Figure~\ref{fig: condition} left). Calculating separately by group provides a better result (Figure~\ref{fig: condition} right).
 
 
 \subsection{Plot types}\label{plottype}
