@@ -334,8 +334,15 @@ The importance of conditioning in the imputation is illustrated in Figure~\ref{f
 
 \subsection{Plot types}\label{plottype}
 
-There are four types of graphs available in the missing data GUI: histogram (for continuous data)/ barchart (for categorical data), spinogram/spineplot, pairwise plots, and parallel coordinates plot. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputed values on any chosen variables. In Figure~\ref{fig:graphtypes} the yellow color means that the value is originally missing in humidity.
+There are four types of graphs available in \pkg{MissingDataGUI}: histogram/barchart, spinogram/spineplot, pairwise plots, and parallel coordinates plot. Figure~\ref{fig:graphtypes} displays all the graph types. Two color-blind friendly colors represent the observations and imputed values on any chosen variables. In Figure~\ref{fig:graphtypes} the yellow color means that the value is originally missing in humidity.
 
+Separate histograms (continuous variables) and barcharts (categorical variables) are shown for each of the variables selected. When the missing values and the complete values share one bar, the bar is cut into two parts, and the ratio of the two heights is equal to the ratio of missing and non-missing values in that bar.
+
+The spinogram (continuous variable) and spineplot (for categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, use width of the rectangle to represent count. Height is the same for all bars. The focus is on proportion for each group. The bars in the spinogram or spineplot are partitioned into two colors for the missing and non-missing values.
+
+A scatterplot matrix is used to display pairs of variables. Variable names and scales are placed on the diagonal. For the continuous variables, the pairwise scatterplots are placed in the lower triangle, and the contour plots are shown in the upper triangle. For the categorical variables, barcharts are displayed in both upper and lower triangles. Bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited space available to the graphics device limits the number of variables that can be shown. The upper limit of the number of variables is set to be 5 and the lower limit is 2.
+
+The parallel coordinates plot by \citet{inselberg1985plane} and \citet{wegman1990hyperdimensional} can be used to high-dimensional data. Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. The parallel coordinates plot can give an overview of a relatively large quantity of variables. In \pkg{MissingDataGUI}, the order of the variables can be chosen in one of two ways: the original order in the data, or by sorting the variables from the best separator to the worst of missing values by the F statistic from ANOVA. In Figure~\ref{fig:graphtypes}, the best separating variable for the missingness of humidity is humidity itself, because the ``below 10\%'' method makes a big gap between the missing and non-missing values. ``Below 10\%'' is not an ideal method for the ordered parallel coordinates plot. However, the plot is still useful: it reveals that the missingness on humidity occurred in one year and one location, when sea.surface.temp and air.temp were low.
 
 \begin{center}
 \begin{figure}[h]
@@ -364,15 +371,6 @@ The first row from left to right are barchart, histogram, spineplot, and spinogr
 \label{fig:graphtypes}
 \end{figure}
 \par\end{center}
-
-
-Histograms and barcharts are shown one by one for all the variables selected. When the missing values and the complete values share one bar, the bar is cut into two parts, and the ratio of two heights is equal to the ratio of missing and non-missing values in that bar.
-
-The spinogram (for continuous variable) and spineplot (for categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, use width of the rectangle to represent count. Height is the same for all bars. The focus is on proportion for each group. The bars in the spinogram or spineplot are partitioned into two colors for the missing and non-missing values.
-
-A scatterplot matrix is used to display pairs of variables. Variable names and scales are placed on the diagonal. For the continuous variables, the pairwise scatterplots are placed in the lower triangle, and the contour plots are shown in the upper triangle. For the categorical variables, barcharts by the categories of the vertical variable are given on both triangles. Again, the bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited space available to the graphics device limits the number of variables that can be shown. The upper limit of the number of variables is set to be 5 and the lower limit is 2.
-
-The parallel coordinates plot by \citet{inselberg1985plane} and \citet{wegman1990hyperdimensional} visualizes high-dimensional data. Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. Parallel coordinates plot, conversely, can give an overview on a relatively large quantity of variables. In the missing data GUI, the order of the variables can be chosen in one of two ways: the original order in the data, or by sorting the variables from the best separator to the worst by F statistic from ANOVA. In Figure~\ref{fig:graphtypes}, the best separating variable for the missingness of humidity is humidity itself, because the ``below 10\%'' method makes a big gap between the missing and non-missing values. ``Below 10\%'' is not an ideal method for the ordered parallel coordinates plot. However, the plot is still useful: it reveals that the missingness of humidity occurred in one year and one location, when sea.surface.temp and air.temp were low.
 
 
 \subsection{Design issues}
