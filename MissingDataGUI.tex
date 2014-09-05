@@ -467,9 +467,9 @@ MissingDataGUI(tao)
 
 \subsection{Exploring missings}
 
-Three of the 8 variables have missing values. First, let's look at the distribution of missings on these variables. Figure~\ref{fig:tao1} (left) shows the pairwise plots of three variables (sea.surface.temp, air.temp, and humidity) with any missing values colored in yellow. Cases which are missing on humidity have low values of sea and air temperature. This suggests the dependence between humidity missingness and the temperature variables. Imputation methods that incorporate this dependence may be preferable.
+Three of the 8 variables have missing values. First, let's look at the distribution of missings on these variables. Figure~\ref{fig:tao1} (left) shows the pairwise plots of three variables (sea.surface.temp, air.temp, and humidity) with missing values on any of the three variables colored in yellow, and shown as 10\% below the minimum data value. Cases which are missing on humidity (string of points at bottom of bottom row of plots) have low values of sea and air temperature. This suggests the dependence between humidity missingness and the temperature variables. Imputation methods that incorporate this dependence may be preferable.
 
-Figure~\ref{fig:tao1} (right) shows the data imputed with median values (yellow). This imputation imposes a cross structure on the data, which does not match the shape of the complete cases. For example, there is a line of imputed values in the plot of air temperature versus sea surface temperature which is far from the rest of the complete cases. Thus the imputation method does not work well for this data.
+Figure~\ref{fig:tao1} (right) shows the data imputed with median values. This imputation imposes a cross structure on the data, which does not match the shape of the complete cases. This would not be a recommended method for creating a complete data set.
 
 
 \begin{figure*}[htp]
@@ -480,7 +480,7 @@ Figure~\ref{fig:tao1} (right) shows the data imputed with median values (yellow)
 \end{figure*}
 
 
-Figure~\ref{fig:tao3} (left) shows the data conditional imputing with median values (yellow) by year. This better matches the distribution of complete cases, although the imputed values still form bands in the scatterplot. This might be a problem because the variance estimation will be affected. 
+Figure~\ref{fig:tao3} (left) shows the data imputed with median values conditional by year. This better matches the distribution of complete cases, although the imputed values still form bands in the scatterplot. This might be a problem because the variance estimation will be affected. 
 
 For this data, the better ways to impute the data would take the strong association between the variables into account. This suggests that neighbor or multiple imputation might be the more desirable imputation methods. Figure~\ref{fig:tao3} (right) shows the results for MI:areg, the regression-based imputation, conditional on year. The imputed values match the distribution of complete cases reasonably well. There are a few slight concerns: some of the imputed values have lower air temperature values than any of the complete cases, the spread of the imputed values is a little greater than the complete cases. But overall, this is probably as good as it is going to get with imputing the missings for this data set. It would be reasonable to export the imputed data for further analysis at this point.
 
