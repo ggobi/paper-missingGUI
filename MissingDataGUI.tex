@@ -273,12 +273,13 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 %\clearpage
 \subsubsection{Multiple imputations}
 
-Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution and serve a wide variety of analytical goals. Four \proglang{R} packages are utilized to implement multiple imputations in the missing data GUI. Figure~\ref{fig:multiple-imputation} demonstrates the results of four packages on the same data. 
+Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution, and serve a wide variety of analytical purposess. Functions from four \proglang{R} packages are utilized to implement multiple imputations in \pkg{MissingDataGUI}. Figure~\ref{fig:multiple-imputation} demonstrates the results from different multiple imputations on the same data. 
 
-Among these packages, \pkg{norm} is quite different from the other three. \citet{schafer1998multiple} introduced the basic idea of \pkg{norm}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge the distribution. 
+Among the four packages, \pkg{norm} is quite different from the other three. The ideas behind the package were introduced by \citet{schafer1998multiple}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge on distribution. 
 
-All the other three packages are using a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. \pkg{mice} stands in the middle of the other two: the models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
+The other packages use a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. The package \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. In between these two is \pkg{mice}: The models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
 
+By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred.
 
 \begin{center}
 \begin{table}[h]
@@ -305,9 +306,6 @@ All the other three packages are using a chained equation approach with similar 
 \label{tab:compare-mi}
 \end{table}
 \par\end{center}
-
-
-By default, $m=3$ chains are imputed and users can modify the number of chains. Each chain will produce a result shown in a separate graphical panel. Switching among the panels the user can compare the results and observe discrepances. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small dump of imputed values occurred.
 
 
 \begin{center}
