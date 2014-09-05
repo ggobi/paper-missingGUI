@@ -144,7 +144,7 @@ Figure~\ref{fig:missingmap} displays 245 observations and 34 variables for the d
 \includegraphics[width=0.3\textwidth]{graph/fig5-3-missingmap-2}
 \includegraphics[width=0.345\textwidth]{graph/fig5-3-missingmap-3}
 \par\end{centering}
-\caption{Missingness maps with different orders of variables and cases. The left panel gives the original order; the middle one sorts the variables and cases by a decreasing number of missing values; the right one sorts them by a hierarchical clustering of missingness. From the original missingness map we see some variables with high missing rate, and several vertical segments at the bottom. In the middle panel the yellow color is clustered, although still messy, we can see some relationship between missing variables and observations. From the clustered missingness map on the right, we find that the missingness on the top two variables are strongly associated.}
+\caption{Missingness maps, same data but different ordering of variables (rows) and cases (columns): (left) raw data order, (middle) variables and cases sorted by decreasing number of missing values, (right) sorted by hierarchical clustering of missingness. From the raw data missingness map, the horizontal stripes indicate several variables have many missings, and the vertical stripes near the bottom indicate some structural missing cases. When variables and cases are sorted by missingness rate (middle), variables with missings often have missings on th same cases, and the additional few sporadic missing values can be easily spotted. Using the clustered missingness map (right) the blocks of missings on variables and cases is more easily seen.}
 \label{fig:missingmap}
 \end{figure}
 \par\end{center}
