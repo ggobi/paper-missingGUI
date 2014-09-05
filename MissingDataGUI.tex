@@ -475,7 +475,7 @@ Figure~\ref{fig:tao1} (right) shows the data imputed with median values. This im
 \begin{figure*}[htp]
 \centerline{\includegraphics[width=0.49\textwidth]{graph/fig4-3-below10-uncondition}
 \includegraphics[width=0.49\textwidth]{graph/fig4-1-median-uncondition}}
-\caption{(Left) Exploring the effect missingness on humidity, sea and air temperature. Missings on humidity (the bottom line of the third row) occur at the lower temperature values, suggesting a dependent relationship. Missing values are not missing completely at random. (Right) Exploring imputation methods. Imputation using the medians is shown here. Values that have been imputed are shown as yellow. Median imputation introduces a cross structure to the point scatter, and the imputed values don't match the data well, for example the line of imputed values is very apart from the complete cases in the plot of the tao temperature variables.}
+\caption{(Left) Exploring the effect missingness (yellow) on humidity, sea and air temperature. Missings on humidity (the bottom line of the third row) occur at the lower temperature values, suggesting a dependence relationship. Missing values are not missing completely at random. (Right) Imputation using the medians. Median imputation introduces a cross structure to the point scatter, and the imputed values don't match the data well.}
 \label{fig:tao1}
 \end{figure*}
 
@@ -487,7 +487,7 @@ For this data, the better ways to impute the data would take the strong associat
 
 \begin{figure*}[htp]
 \centerline{\includegraphics[width=0.49\textwidth]{graph/fig4-2-median-condition}\includegraphics[width=0.49\textwidth]{graph/fig4-4-areg-condition}}
-\caption{(Left) Imputation using the median conditional on year. Imputed values better match the complete cases, with the exception of the banding due to the fixed median value. (Right) Imputation using the multiple imputation MI:areg conditional on year. The distribution of imputed values is fairly close to the distribution of complete cases.}
+\caption{(Left) Imputation using the median, conditional on year. Imputed values better match the complete cases, with the exception of the banding due to a fixed median value. (Right) Imputation using the multiple imputation MI:areg conditional on year. The distribution of imputed values is fairly close to the distribution of complete cases.}
 \label{fig:tao3}
 \end{figure*}
 
