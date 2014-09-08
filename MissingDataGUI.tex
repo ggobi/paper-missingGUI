@@ -249,7 +249,7 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \begin{centering}
 \includegraphics[width=1\textwidth]{graph/fig9-diagram}
 \par\end{centering}
-\caption{Illustration of the $k$ nearest neighbors imputation method. The shaded entries are the complete observations to rank. The red frames variables used to compute the distance. After getting the rank of all complete observations, the first $k$ are used as neighbors. }
+\caption{Illustration of the $k$ nearest neighbors imputation method. The shaded entries are the complete observations to rank. The variables in red frames are used to compute the distance. After getting the rank of all complete observations, the first $k$ are used as neighbors. }
 \label{fig:neighbor-diagram}
 \end{figure}
 \par\end{center}
@@ -273,13 +273,13 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 %\clearpage
 \subsubsection{Multiple imputations}
 
-Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution, and serve a wide variety of analytical purposess. Functions from four \proglang{R} packages are utilized to implement multiple imputations in \pkg{MissingDataGUI}. Figure~\ref{fig:multiple-imputation} demonstrates the results from different multiple imputations on the same data. 
+Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution, and serve a wide variety of analytical purposes. Functions from four \proglang{R} packages are utilized to implement multiple imputations in \pkg{MissingDataGUI}. Figure~\ref{fig:multiple-imputation} demonstrates the results from different multiple imputations on the same data. 
 
 Among the four packages, \pkg{norm} is quite different from the other three. The ideas behind the package were introduced by \citet{schafer1998multiple}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge on distribution. 
 
 The other packages use a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. The package \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. In between these two is \pkg{mice}: The models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
 
-By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred (Figure \ref{fig:chaintabs}).
+By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred.
 
 \begin{center}
 \begin{table}[h]
@@ -338,7 +338,7 @@ There are four types of graphs available in \pkg{MissingDataGUI}: histogram/barc
 
 Separate histograms (continuous variables) and barcharts (categorical variables) are shown for each of the variables selected. When the missing values and the complete values share one bar, the bar is cut into two parts, and the ratio of the two heights is equal to the ratio of missing and non-missing values in that bar.
 
-The spinogram (continuous variable) and spineplot (for categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, use width of the rectangle to represent count. Height is the same for all bars. The focus is on proportion for each group. The bars in the spinogram or spineplot are partitioned into two colors for the missing and non-missing values.
+The spinogram (continuous variable) and spineplot (categorical variable), introduced by \citet{hummel1996linked} and \citet{theus1999visualizing}, use width of the rectangle to represent count. Height is the same for all bars. The focus is on proportion for each group. The bars in the spinogram or spineplot are partitioned into two colors for the missing and non-missing values.
 
 A scatterplot matrix is used to display pairs of variables. Variable names and scales are placed on the diagonal. For the continuous variables, the pairwise scatterplots are placed in the lower triangle, and the contour plots are shown in the upper triangle. For the categorical variables, barcharts are displayed in both upper and lower triangles. Bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited space available to the graphics device limits the number of variables that can be shown. The upper limit of the number of variables is set to be 5 and the lower limit is 2.
 
@@ -513,7 +513,7 @@ As an example, let us check whether the two incomplete variables (air.temp and h
 \par\end{center}
 
 
-Rejecting MAR, it very difficult generally, even when an obvious difference between missings and non-missings can be seen in the plots, because the real values of the missings are unknown. For example, in Figure~\ref{fig:uvwind}, the distributions of uwind and vwind conditioned on the missingness of air.temp are different, since the missings on air.temp are higher in uwind and more scattered in vwind. The reasoning is complicated, but we cannot reject MAR. It is possible that, conditional on uwind and vwind, that the distribution of true air.temp values of the missings is the same as that of the observed values. Thus, uwind and vwind remove any dependence of missing status for the air.temp variable. Generally, it is not possible to establish MNAR without actually knowing the true values of the missings. However, for this data, the plots suggest that the imputation of air.temp should involve uwind and vwind.
+Rejecting MAR, is very difficult generally, even when an obvious difference between missings and non-missings can be seen in the plots, because the real values of the missings are unknown. For example, in Figure~\ref{fig:uvwind}, the distributions of uwind and vwind conditioned on the missingness of air.temp are different, since the missings on air.temp are higher in uwind and more scattered in vwind. The reasoning is complicated, but we cannot reject MAR. It is possible that, conditional on uwind and vwind, that the distribution of true air.temp values of the missings is the same as that of the observed values. Thus, uwind and vwind remove any dependence of missing status for the air.temp variable. Generally, it is not possible to establish MNAR without actually knowing the true values of the missings. However, for this data, the plots suggest that the imputation of air.temp should involve uwind and vwind.
 
 
 \begin{center}
