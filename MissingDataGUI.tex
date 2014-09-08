@@ -255,8 +255,19 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \par\end{center}
 
 
+%\clearpage
+\subsubsection{Multiple imputations}
+
+Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution, and serve a wide variety of analytical purposes. Functions from four \proglang{R} packages are utilized to implement multiple imputations in \pkg{MissingDataGUI}. Figure~\ref{fig:multiple-imputation} demonstrates the results from different multiple imputations on the same data. 
+
+Among the four packages, \pkg{norm} is quite different from the other three. The ideas behind the package were introduced by \citet{schafer1998multiple}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge on distribution. 
+
+The other packages use a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. The package \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. In between these two is \pkg{mice}: The models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
+
+By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred.
+
 \begin{center}
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{centering}
 \begin{tabular}{cccc}
 {\tiny{(a) \pkg{Hmisc}: predictive mean matching}} &  &  & {\tiny{(b) \pkg{norm}: multivariate normal model}}\tabularnewline
@@ -270,19 +281,8 @@ The neighbor methods in \pkg{MissingDataGUI} can be seen as two special cases of
 \end{figure}
 \par\end{center}
 
-%\clearpage
-\subsubsection{Multiple imputations}
-
-Multiple imputation, first proposed by \citet{rubin1978multiple}, is a method to get valid inferences by simulation. Multiple imputed datasets are generated based on the joint distribution, and serve a wide variety of analytical purposes. Functions from four \proglang{R} packages are utilized to implement multiple imputations in \pkg{MissingDataGUI}. Figure~\ref{fig:multiple-imputation} demonstrates the results from different multiple imputations on the same data. 
-
-Among the four packages, \pkg{norm} is quite different from the other three. The ideas behind the package were introduced by \citet{schafer1998multiple}. It assumes the observations are sampled from a multivariate normal distribution, and uses the EM algorithm to estimate the mean and variance-covariance matrix. It utilizes a data augmentation method to converge on distribution. 
-
-The other packages use a chained equation approach with similar steps but different settings. A comparison between the three packages is given in Table~\ref{tab:compare-mi}, based on \citet{hmisc}, \citet{mice}, and \citet{mi}. The main differences are that \pkg{Hmisc} provides three models with flexible drawing methods around the predicted values, and applies bootstrap to obtain a sample for every iteration. The package \pkg{mi} uses a convergence criterion to stop the iteration with some allowance for special situations. In between these two is \pkg{mice}: The models provided are more flexible than \pkg{Hmisc}, but not as bayesian as \pkg{mi}.
-
-By default, $m=3$ chains are imputed and users can choose the number of chains. Each chain will produce a result shown in a separate graphical panel. By switching between the panels, the user can compare the results and observe discrepances between the results. Figure~\ref{fig:chaintabs} shows the results of four different chains produced by \pkg{mice}. Three of the four produced results where a small clump of imputed values occurred.
-
 \begin{center}
-\begin{table}[h]
+\begin{table}[!h]
 \begin{centering}
 \begin{tabular}{l|c|c|c}
 \hline 
@@ -309,7 +309,7 @@ By default, $m=3$ chains are imputed and users can choose the number of chains. 
 
 
 \begin{center}
-\begin{figure}[h]
+\begin{figure}[!h]
 \begin{centering}
 \begin{tabular}{cccc}
 \includegraphics[width=0.4\textwidth]{graph/fig10-1-chain} &  &  & \includegraphics[width=0.4\textwidth]{graph/fig10-2-chain}\tabularnewline
@@ -331,6 +331,17 @@ This is available using the controls ``categorical variables to condition on''. 
 
 The importance of conditioning in the imputation is illustrated in Figure~\ref{fig: condition}. Without the condition, the imputated do not match the distribution of complete values (Figure~\ref{fig: condition} left). Calculating separately by group provides a better result (Figure~\ref{fig: condition} right).
 
+\begin{center}
+\begin{figure}[h]
+\begin{centering}
+\includegraphics[width=.48\textwidth]{graph/fig4-1-median-uncondition}
+\includegraphics[width=.48\textwidth]{graph/fig4-2-median-condition}
+\par\end{centering}
+\caption{Effect of conditioning on imputed vaues. The left panel is the imputation by median without condition and the right one is conditioned on year. In the left plot we can see that the imputed values (yellow) fall between the two clusters, at the overall median. But when the imputation is conditioned on year (right plot), the imputed values are now better placed into the two clusters in the data.}
+\label{fig: condition}
+\end{figure}
+\par\end{center}
+
 
 \subsection{Plot types}\label{plottype}
 
@@ -343,18 +354,6 @@ The spinogram (continuous variable) and spineplot (categorical variable), introd
 A scatterplot matrix is used to display pairs of variables. Variable names and scales are placed on the diagonal. For the continuous variables, the pairwise scatterplots are placed in the lower triangle, and the contour plots are shown in the upper triangle. For the categorical variables, barcharts are displayed in both upper and lower triangles. Bars are colored in proportion to the missings. The combination of continuous and categorical variables is displayed as side-by-side boxplots of missing and non-missing values for each category on the upper triangle and side-by-side histograms on the lower triangle. Limited space available to the graphics device limits the number of variables that can be shown. The upper limit of the number of variables is set to be 5 and the lower limit is 2.
 
 The parallel coordinates plot by \citet{inselberg1985plane} and \citet{wegman1990hyperdimensional} can be used to high-dimensional data. Though many plot types, like the scatterplot or histogram, are helpful to reveal the missing pattern, they are not convenient to display many variables simultaneously. The parallel coordinates plot can give an overview of a relatively large quantity of variables. In \pkg{MissingDataGUI}, the order of the variables can be chosen in one of two ways: the original order in the data, or by sorting the variables from the best separator to the worst of missing values by the F statistic from ANOVA. In Figure~\ref{fig:graphtypes}, the best separating variable for the missingness of humidity is humidity itself, because the ``below 10\%'' method makes a big gap between the missing and non-missing values. ``Below 10\%'' is not an ideal method for the ordered parallel coordinates plot. However, the plot is still useful: it reveals that the missingness on humidity occurred in one year and one location, when sea.surface.temp and air.temp were low.
-
-\begin{center}
-\begin{figure}[h]
-\begin{centering}
-\includegraphics[width=.48\textwidth]{graph/fig4-1-median-uncondition}
-\includegraphics[width=.48\textwidth]{graph/fig4-2-median-condition}
-\par\end{centering}
-\caption{Effect of conditioning on imputed vaues. The left panel is the imputation by median without condition and the right one is conditioned on year. In the left plot we can see that the imputed values (yellow) fall between the two clusters, at the overall median. But when the imputation is conditioned on year (right plot), the imputed values are now better placed into the two clusters in the data.}
-\label{fig: condition}
-\end{figure}
-\par\end{center}
-
 
 \begin{center}
 \begin{figure}[h]
@@ -400,27 +399,6 @@ The choices vary depending on the type of the variable.
 %\par\end{center}
 
 
-\begin{center}
-\begin{figure}[!h]
-\begin{centering}
-\includegraphics[width=0.8\textwidth]{graph/fig6-open}
-\par\end{centering}
-\caption{The data import GUI, with file selector, which pops up upon clicking the ``open'' button. More than one file could be listed in the GUI, but only one data set is allowed active in the missing data GUI. The first file is automatically imported if none of the data sets are chosen when the ``Watching Missing Values'' button is hit.}
-\label{fig: import}
-\end{figure}
-\par\end{center}
-
-
-\begin{center}
-\begin{figure}[!h]
-\begin{centering}
-\includegraphics[width=0.6\textwidth]{graph/fig7-export}
-\par\end{centering}
-\caption{The data export GUI. By default, all columns are exported with a shadow matrix. The current working directory is set to be location for the exported files. Three exporting formats are provided.}
-\label{fig: export}
-\end{figure}
-\par\end{center}
-
 \subsection{Data input and output}
 
 Data can be entered as either a data frame or a comma separated file (csv). The preferred approach is to read an existing data frame in \proglang{R} because the type of variables (e.g. factor, numeric) are preserved. \code{MissingDataGUI(data)} is used to achieve this.
@@ -431,6 +409,25 @@ Once values are imputed, and a complete data set created, it can be saved using 
 
 The exported data with its shadow matrix can be loaded back into the GUI, which implies the imputed data from other imputation methods (not provided by the missing data GUI) can also be imported. Users only need to provide a shadow matrix which indicates the locations of missings. In other words, the imported structure should be a data frame or a csv file with the first $n$ columns being the imputed data and the next $n$ columns being the shadow matrix.
 
+\begin{center}
+\begin{figure}[!h]
+\begin{centering}
+\includegraphics[width=0.8\textwidth]{graph/fig6-open}
+\par\end{centering}
+\caption{The data import GUI, with file selector, which pops up upon clicking the ``open'' button. More than one file could be listed in the GUI, but only one data set is allowed active in the missing data GUI. The first file is automatically imported if none of the data sets are chosen when the ``Watching Missing Values'' button is hit.}
+\label{fig: import}
+\end{figure}
+\par\end{center}
+
+\begin{center}
+\begin{figure}[!h]
+\begin{centering}
+\includegraphics[width=0.6\textwidth]{graph/fig7-export}
+\par\end{centering}
+\caption{The data export GUI. By default, all columns are exported with a shadow matrix. The current working directory is set to be location for the exported files. Three exporting formats are provided.}
+\label{fig: export}
+\end{figure}
+\par\end{center}
 
 
 \subsection{Additional features of the GUI}
