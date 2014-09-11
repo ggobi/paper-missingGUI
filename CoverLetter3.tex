@@ -11,7 +11,7 @@
 \title{Response to the Reviews of MissingDataGUI}
 
 \maketitle
-A minor revision was made to both the manuscript and package.
+Minor revisions were made to both the manuscript and package.
 \begin{itemize}
 \item Changes in the manuscript include:
 
@@ -20,56 +20,54 @@ A minor revision was made to both the manuscript and package.
 methods
 \item description of the median and mean imputation
 \item comparison between multiple imputation methods (especially for aregImpute
-in Hmics)
+in Hmisc)
 \item argument on the data generation process in accessing MCAR or MAR
-\item tweaking the sentences and words.
+\item improving the language
 \end{itemize}
 \item Changes in the package are:
 
 \begin{itemize}
 \item renaming the ``Mean/Mode'' method to ``Mean''
-\item fixing a few bugs.
+\item fixing a few bugs
 \end{itemize}
 \end{itemize}
 
 \subsection*{Response to the AE report}
 
-A main issue from both reviewers and the editor is with the simple
-imputation methods. We agree that the single imputation ``understate
+A main issue from both reviewers and the associate editor was with the simple
+imputation methods. We agree that single imputation ``understates
 the uncertainty in the imputation'' (Reviewer \#1), and if the variance
 and covariance estimation is crucial to the analysis then one should
-not use single imputation or univariate imputation. To give a warning
-in the paper, we dropped the argument in page 7 about the median or
-mean method, and then added a paragraph on the top of page 8. We stated
+not use single imputation or univariate imputation. To inform readers,
+in the paper we removed the semtence in page 7 about the simple imputation method, and added a paragraph that gives more details on the top of page 8. We stated
 that the univariate imputation methods ignore the dependencies between
-variables and produce bias in the variance and covariance estimation.
+variables and produce biased variance and covariance estimation.
 And we used Figure 4 as an example to show the inadequacy. However,
 we do not agree that the methods are always wrong under any assumption
-or any circumstance. In some extreme situation, or when the variance/covariance
-estimation is not cared much, we would like to give the user some
-freedom to explore the data with simple methods.
+or any circumstance. In a few applications that we have seen, when results are not impacted by the simple imputation, it is ok to use them. The paper now puts more emphasis on better imputation methods.
 
-The next issue is about the confusing description of median imputation.
-We reworded the description, and made a small change in the software.
-Actually we use the mode in the initial design because the mean and
-median methods do not work for some types of variables, and we do
-not want that interrupts the easiest exploration. After the change,
-the names of simple imputation methods are ``median'', ``mean'',
-and ``random value''. We explained in page 7 that the software makes
-automatic choices and when the mode is returned.
+The second major issue was that the description of median imputation
+was confusing.  We reworded the description, and made a small changes
+in the software.  The mode was used when the type of variable
+prevented the calculation of the mean and median, and allowed for
+seamless operations for the user, in order to continue exploring the
+missing patterns.  The names of simple imputation methods are now
+``median'', ``mean'', and ``random value''. We explained in page 7
+that the software makes automatic choices and when the mode is returned.
 
 We updated the comparison between multiple imputation methods, and
-mentioned to think about the data generation process when checking
-MCAR and MAR, as required by Reviewer \#2. (Details below in the response
-to Review 2.)
+emphasized that it is important to think about the data generation
+process when checking MCAR and MAR, as required by Reviewer
+\#2. (Details below in the response to Review 2.)
 
-We also followed the editor's suggestion to make some little changes:
+We also followed the AE's suggestion to make some small changes:
 \begin{itemize}
 \item New heading for the last section. Instead of ``Discussion'', we
 use ``Summary''.
-\item Correct citation to XGobi, GGobi, and MANET. We checked with the authors
-to these software to make sure the references are correct.
-\item Rewording some paragraphs and sentences.
+\item Correct citation to XGobi, GGobi, and MANET are made. We checked
+  with the authors to these software to make sure the references are
+  correct.
+\item Rewording paragraphs and sentences throughout the paper to improve the language.
 \end{itemize}
 
 \subsection*{Response to Review 1}
@@ -77,17 +75,17 @@ to these software to make sure the references are correct.
 Reviewer \#1 questioned the median method and single imputation. We
 have answered them in the response to the AE. One other thing that
 reviewer \#1 mentioned is that the package froze RStudio. We cannot
-reproduce the same problem -- it may not come from the package. To
-find out the real problem will need more tests (and user reports)
-among various versions of software and platform. We will keep an eye
-on it and updating the package if necessary.
+reproduce the same problem -- it may not come from this package. To
+diagnose will need more tests (and user reports) among various
+versions of software and platform. We will keep an eye on it and
+update the package as necessary, and in response to user feedback.
 
 
 \subsection*{Response to Review 2}
 
 Reviewer \#2 addressed a couple of questions. The serious one is still
 about univariate/single imputation, and we answered it in the response
-to the AE. The rest part of the questions are answered as follows.
+to the AE. Remaining questions are answered as follows.
 \begin{itemize}
 \item The multiple imputation methods are default to three imputed data
 sets, and the reviewer suggests to default to one only.
@@ -104,25 +102,26 @@ misleading -- ``sounds as though the Hmisc package uses a very inflexible
 selection of models''.
 
 \begin{itemize}
-\item The paragraph is revised to make the statement clear. However, Reviewer
-\#2 misunderstood what ``flexible'' means. Hmisc provides three
-models to predict the missings, while mice and mi provide nearly 10
-models, moreover, they keep a port for the user to write their own
-model, as we mentioned in Table 2. In our opinion, the user-specific
-models make the package mice and mi more ``flexible''. But Reviewer
-\#2 is correct that Hmisc uses automatic transformation of the quantitative
-variables with a user-specific weight, to get the imputed value from
-the predicted value. We mentioned this in the revision.
+\item The paragraph is revised to make the statement clearer. However,
+  Reviewer \#2 misunderstood what ``flexible'' means. Hmisc provides
+  three models to predict the missings, while mice and mi provide
+  nearly 10 models. Moreover, they allow for the user to write
+  their own model, as we mentioned in Table 2. In our opinion, the
+  user-specific models make the package mice and mi more
+  ``flexible''. But Reviewer \#2 is correct that Hmisc automatically
+  transforms the quantitative variables with a user-specific
+  weight, to get the imputed value from the predicted value. We
+  mentioned this in the revision.
 \end{itemize}
 \item Plots in Figure 8 are too small, and need better comments.
 
 \begin{itemize}
-\item We enlarged the size of the Figure.
+\item We enlarged the size of the plots.
 \end{itemize}
 \item Should mention how multiply imputed data are exported.
 
 \begin{itemize}
-\item The export of multiple imputation methods is explained in the first
+\item The export of multiple imputation results is explained in the first
 paragraph of page 15.
 \end{itemize}
 \item Checking of assumptions should mention thinking about the data generation
