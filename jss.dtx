@@ -1,6 +1,6 @@
-\def\fileversion{2.1}
+\def\fileversion{2.2}
 \def\filename{jss}
-\def\filedate{2012/06/07}
+\def\filedate{2013/04/06}
 %
 % \iffalse
 %
@@ -52,6 +52,9 @@
 % \changes{2.1}{2012/06/07}
 %   {allow _ in doi, new option 'nofooter'}
 %
+% \changes{2.2}{2013/04/06}
+%   {omit dependency on a4wide, hard-code page layout instead}
+%
 %
 %
 % \MakeShortVerb{\|}
@@ -89,7 +92,7 @@
 % (FAQ) is available online \url{http://www.jstatsoft.org/style} that provides
 % additional details and tries to address typical problems.
 %
-% All documents need to be processed by pdf\TeX{}, some useful information
+% All documents need to be processed by pdf\LaTeX{}, some useful information
 % on this is provided in Section~\ref{sec:TeX}, which also contains some
 % information on using \textsc{Bib}\TeX{}. \textsc{Bib}\TeX{} together
 % with the style file |jss.bst| produces references
@@ -122,7 +125,7 @@
 % commands used for the header declarations are described
 % in more detail in the following.
 %
-% By using |jss.cls|, the packages \foopkg{graphicx}, \foopkg{a4wide},
+% By using |jss.cls|, the packages \foopkg{graphicx},
 % \foopkg{color}, \foopkg{hyperref}, \foopkg{ae}, \foopkg{fancyverb} and
 % \foopkg{natbib} are loaded automatically.
 % Authors may, of course, include further packages
@@ -143,7 +146,7 @@
 % \section[Calling C++ from R]{Calling \proglang{C++} from \proglang{R}}
 % \end{verbatim}
 %
-% \emph{Hint.} If compilation with pdf\TeX{} fails with an error at
+% \emph{Hint.} If compilation with pdf\LaTeX{} fails with an error at
 % |\begin{document}| the reason is almost surely that some of the
 % declarations in the header have not been made properly. For example,
 % |\Plainauthor|, |\Plaintitle| or |\Plainkeywords| might be missing
@@ -161,7 +164,7 @@
 % More details can be found in the remainder of this manual.
 % 
 % \begin{itemize}
-%   \item The manuscript can be compiled by pdf\TeX{}.
+%   \item The manuscript can be compiled by pdf\LaTeX{}.
 %   \item |\proglang|, |\pkg| and |\code| have been used for highlighting
 %         throughout the paper (including titles and references),
 %         except where explicitly escaped.
@@ -183,7 +186,7 @@
 %
 % For JSS articles and code snippets respectively, 
 % the following declarations have to be made
-% in the header of the \TeX{} sources (before |\begin{document}|).
+% in the header of the \LaTeX{} sources (before |\begin{document}|).
 % See also the template |article.tex| or |codesnippet.tex|
 % respectively.
 %
@@ -323,7 +326,7 @@
 %
 % For JSS book and software respectively, 
 % the following declarations have to be made
-% in the header of the \TeX{} sources (before |\begin{document}|).
+% in the header of the \LaTeX{} sources (before |\begin{document}|).
 % See also the template |bookreview.tex| or |softwarereview.tex|
 % respectively. Note that some commands might differ between
 % book and software reviews, this is always stated explicitely
@@ -579,12 +582,12 @@
 % \foopkg{amssymb}, etc.) could be useful.
 %
 %
-% \section{Using pdf\TeX{} and \textbf{\sc Bib}\TeX{}} \label{sec:TeX}
+% \section{Using pdf\LaTeX{} and \textbf{\sc Bib}\TeX{}} \label{sec:TeX}
 %
-% \subsubsection*{Using pdf\TeX{}}
+% \subsubsection*{Using pdf\LaTeX{}}
 %
 % A \LaTeX{} document (|foo.tex|, say) using |jss.cls| needs to be compiled using 
-% pdf\TeX{}, typically this will be done using either of the 
+% pdf\LaTeX{}, typically this will be done using either of the 
 % following commands:
 % \begin{verbatim}
 % pdflatex foo.tex
@@ -597,7 +600,7 @@
 % \LaTeX{} documents you will have to press the `pdf\LaTeX{}' button
 % (as opposed to the `\LaTeX{}' button).
 %
-% All graphics included into the document have to be in a format pdf\TeX{} can
+% All graphics included into the document have to be in a format pdf\LaTeX{} can
 % deal with, i.e., PDF for vector graphics or JPG/PNG/etc. for bitmaps/raster graphics.
 % If you cannot produce PDF graphics directly but only PS/EPS, these can
 % be converted using |ps2pdf| or |epstopdf| (usually preferred).
@@ -617,9 +620,9 @@
 % \end{verbatim}
 %
 % \emph{Hint.} If you know how to produce \LaTeX{} documents that can be
-% processed with both \LaTeX{} and pdf\TeX{}, you can do so if you provide
+% processed with both \LaTeX{} and pdf\LaTeX{}, you can do so if you provide
 % an EPS substitute for |jsslogo.jpg| (e.g. an empty or converted |jsslogo.eps|).
-% Note, however, that the final document needs to be processed with pdf\TeX{}.
+% Note, however, that the final document needs to be processed with pdf\LaTeX{}.
 % Neither this manual nor the JSS encourage or support compilation of
 % JSS documents with standard \LaTeX{}.
 %
@@ -712,7 +715,7 @@
 %
 % \subsection{The driver}
 %
-% Next comes the documentation driver file for \TeX{}, i.e., the file
+% Next comes the documentation driver file for \LaTeX{}, i.e., the file
 % that will produce the documentation you are currently reading.  It
 % will be extracted from this file by the \texttt{docstrip}
 % program.  Since it is the first code in the file one can
@@ -724,7 +727,7 @@
 \documentclass[a4paper]{ltxdoc}
 \providecommand{\file}[1]{\texttt{#1}}
 \providecommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
-\usepackage{color,hyperref,a4wide}
+\usepackage{color,hyperref}
 \oddsidemargin1.2cm
 \textwidth14.2cm
 \textheight23.3cm
@@ -807,7 +810,7 @@
 %    \begin{macrocode}
 %<*class>
 %% required packages
-\RequirePackage{graphicx,a4wide,color,ae,fancyvrb}
+\RequirePackage{graphicx,color,ae,fancyvrb}
 \RequirePackage[T1]{fontenc}
 \IfFileExists{upquote.sty}{\RequirePackage{upquote}}{}
 %</class>
@@ -826,6 +829,23 @@
 \fi
 \bibpunct{(}{)}{;}{a}{}{,}
 \bibliographystyle{jss}
+%</class>
+%    \end{macrocode}
+%
+% The page layout is set to a wide style with smaller margins.
+%    \begin{macrocode}
+%<*class>
+%% page layout
+\topmargin 0pt
+\textheight 46\baselineskip
+\advance\textheight by \topskip
+\oddsidemargin 0.1in
+\evensidemargin 0.15in
+\marginparwidth 1in
+\oddsidemargin 0.125in
+\evensidemargin 0.125in
+\marginparwidth 0.75in
+\textwidth 6.125in
 %</class>
 %    \end{macrocode}
 %

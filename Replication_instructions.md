@@ -27,7 +27,7 @@ Figure 2
 MissingDataGUI(tao)
 ```
 
-- select all the variables in region 1 of the GUI created in Figure 1.
+- (Not necessary: select all the variables in region 1 of the GUI created in Figure 1.)
 - (left) click "Numeric summary" in region 6 of Figure 1.
 - (right) check "year" in region 2, then click "Numeric summary" in region 6.
 
