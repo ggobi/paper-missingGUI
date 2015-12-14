@@ -282,7 +282,7 @@ Figure 18
 MissingDataGUI(tao)
 ```
 
-- select the 1th, 7th, and 8th rows (year, uwind, vwind) in region 1.
+- select the 4th, 7th, and 8th rows (sea.surface.temp, uwind, vwind) in region 1.
 - uncheck all the checkboxes in region 2.
 - (left) click "air.temp" in region 3.
 - (right) click "humidity" in region 3.
